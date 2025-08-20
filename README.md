@@ -54,21 +54,21 @@ ToolBox Activator — это мощный и удобный инструмент
 
 ## 💻 Поддерживаемые IDE
 
-| IDE                  | Эмодзи | Поддержка            | Поддержка |
-| -------------------- | ------ | -------------------- | --------- |
-| 🎨 **IntelliJ IDEA** | 🧠     | Ultimate & Community | ✅ Полная |
-| ⚙️ **CLion**         | 🔧     | C/C++ IDE            | ✅ Полная |
-| 🐘 **PhpStorm**      | 🐘     | PHP IDE              | ✅ Полная |
-| 🎯 **GoLand**        | 🎯     | Go IDE               | ✅ Полная |
-| 🐍 **PyCharm**       | 🐍     | Python IDE           | ✅ Полная |
-| 🌐 **WebStorm**      | 🌐     | Web Frontend IDE     | ✅ Полная |
-| 🎮 **Rider**         | 🎮     | .NET IDE             | ✅ Полная |
-| 🗄️ **DataGrip**      | 🗄️     | SQL IDE              | ✅ Полная |
-| 💎 **RubyMine**      | 💎     | Ruby IDE             | ✅ Полная |
-| 🍎 **AppCode**       | 🍎     | iOS/macOS IDE        | ✅ Полная |
-| 🔮 **DataSpell**     | 🔮     | Data Science IDE     | ✅ Полная |
-| 🔍 **dotMemory**     | 🔍     | Memory Profiler      | ✅ Полная |
-| 🦀 **RustRover**     | 🦀     | Rust IDE             | ✅ Полная |
+| IDE                  | Поддержка            | Поддержка |
+| -------------------- | -------------------- | --------- |
+| 🎨 **IntelliJ IDEA** | Ultimate & Community | ✅ Полная |
+| ⚙️ **CLion**         | C/C++ IDE            | ✅ Полная |
+| 🐘 **PhpStorm**      | PHP IDE              | ✅ Полная |
+| 🎯 **GoLand**        | Go IDE               | ✅ Полная |
+| 🐍 **PyCharm**       | Python IDE           | ✅ Полная |
+| 🌐 **WebStorm**      | Web Frontend IDE     | ✅ Полная |
+| 🎮 **Rider**         | .NET IDE             | ✅ Полная |
+| 🗄️ **DataGrip**      | SQL IDE              | ✅ Полная |
+| 💎 **RubyMine**      | Ruby IDE             | ✅ Полная |
+| 🍎 **AppCode**       | iOS/macOS IDE        | ✅ Полная |
+| 🔮 **DataSpell**     | Data Science IDE     | ✅ Полная |
+| 🔍 **dotMemory**     | Memory Profiler      | ✅ Полная |
+| 🦀 **RustRover**     | Rust IDE             | ✅ Полная |
 
 ---
 
