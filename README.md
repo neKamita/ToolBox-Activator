@@ -56,7 +56,7 @@ ToolBox Activator — это мощный и удобный инструмент
 
 ## 💻 Поддерживаемые IDE
 
-| IDE                  | Эмодзи | Поддержка            | Статус    |
+| IDE                  | Эмодзи | Поддержка            | Поддержка |
 | -------------------- | ------ | -------------------- | --------- |
 | 🎨 **IntelliJ IDEA** | 🧠     | Ultimate & Community | ✅ Полная |
 | ⚙️ **CLion**         | 🔧     | C/C++ IDE            | ✅ Полная |
@@ -346,6 +346,6 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/neKamita)
+Made with ❤️ by [neKamita](https://github.com/neKamita)
 
 </div>
