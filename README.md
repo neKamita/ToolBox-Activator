@@ -323,7 +323,6 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 - [ja-netfilter](https://gitee.com/ja-netfilter/ja-netfilter) - основная технология активации
 - JetBrains - за прекрасные IDE
-- Все контрибьюторы проекта ❤️
 
 ---
 
