@@ -128,8 +128,8 @@ chmod +x activate.sh
 
 <div align="center">
   <video width="100%" controls>
-    <source src="Instructions.mp4" type="video/mp4">
-    Ваш браузер не поддерживает видео тег.
+    <source src="https://raw.githubusercontent.com/neKamita/toolbox-activator/main/Instructions.mp4" type="video/mp4">
+    <p>Ваш браузер не поддерживает видео тег. <a href="https://raw.githubusercontent.com/neKamita/toolbox-activator/main/Instructions.mp4">Скачать видео</a></p>
   </video>
 </div>
 
