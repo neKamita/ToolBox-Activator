@@ -141,14 +141,7 @@ chmod +x activate.sh
 
 ---
 
-## 🎥 Демонстрация
 
-<div align="center">
-  <a href="Instructions.mp4">
-    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Видео инструкция ToolBox Activator" width="70%">
-  </a>
-  <p><em>Нажмите на изображение, чтобы посмотреть видео инструкцию</em></p>
-</div>
 
 </div>
 
