@@ -4,7 +4,42 @@
 
 ## 🌐 Language / Язык
 
-[🇷 **Русский**](#-toolBox-activator-русский) | [🇺🇸 **English**](#-toolBox-activator-english)
+<div style="margin: 20px 0; text-align: center;">
+  <button onclick="switchLanguage('ru')" id="lang-ru-btn" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; margin: 0 10px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">🇷🇺 Русский</button>
+  <button onclick="switchLanguage('en')" id="lang-en-btn" style="background: #2196F3; color: white; border: none; padding: 12px 24px; margin: 0 10px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s ease;">🇺🇸 English</button>
+</div>
+
+<script>
+// Language switcher function
+function switchLanguage(lang) {
+    // Update button styles
+    const ruBtn = document.getElementById('lang-ru-btn');
+    const enBtn = document.getElementById('lang-en-btn');
+
+    if (lang === 'ru') {
+        ruBtn.style.background = '#4CAF50';
+        enBtn.style.background = '#2196F3';
+    } else {
+        ruBtn.style.background = '#2196F3';
+        enBtn.style.background = '#4CAF50';
+    }
+
+    // Show/hide content sections
+    const allSections = document.querySelectorAll('[data-lang-section]');
+    allSections.forEach(section => {
+        if (section.getAttribute('data-lang-section') === lang) {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+// Initialize with Russian as default
+document.addEventListener('DOMContentLoaded', function() {
+    switchLanguage('ru');
+});
+</script>
 
 ![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge&color=red)
 ![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge&color=orange)
@@ -18,6 +53,7 @@
 
 ---
 
+<div data-lang-section="ru">
 # ToolBox Activator (Русский)
 
 ### 🎯 Универсальный активатор для всех JetBrains IDE
@@ -343,9 +379,12 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 Made with ❤️ by [neKamita](https://github.com/neKamita)
 
 </div>
+</div>
+</div>
 
 ---
 
+<div data-lang-section="en">
 # 🇺🇸 ToolBox Activator (English)
 
 ### 🎯 Universal Activator for All JetBrains IDEs
