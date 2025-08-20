@@ -27,8 +27,9 @@ detect_platform() {
             ;;
     esac
 }
-# Auto detect platform
+# Auto-detect platform
 detect_platform
+
 # ============ Configuration =============
 DEBUG=false
 ENABLE_COLOR=true
@@ -52,7 +53,7 @@ if [[ "$OS" == "macOS" ]]; then
     USER_HOME="/Users/${ORIGINAL_USER}"
 fi
 
-# Working paths
+# Working directories
 dir_work="${USER_HOME}/.jb_run"
 dir_config="${dir_work}/config"
 dir_plugins="${dir_work}/plugins"
@@ -118,9 +119,9 @@ check_and_install_deps() {
         return
     fi
 
-    warning "Missing dependencies: ${missing[*]}, attempting to install automatically..."
+    warning "Missing dependencies: ${missing[*]}, attempting automatic installation..."
 
-    # First detect system type
+    # Detect system type first
     case "$(uname -s)" in
         Darwin)
           # Check if Homebrew exists
@@ -131,7 +132,7 @@ check_and_install_deps() {
                   info "Installing Homebrew..."
                   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-                  # Auto configure environment variables
+                  # Auto-configure environment variables
                   if [ -x "/opt/homebrew/bin/brew" ]; then  # Apple Silicon
                       echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
                       source ~/.zshrc
@@ -142,11 +143,11 @@ check_and_install_deps() {
 
                   # Verify again
                   if ! command -v brew &>/dev/null; then
-                      error "Homebrew is still not available after installation, please manually restart terminal and try again"
+                      error "Homebrew installation failed, please manually restart terminal and try again"
                       exit 1
                   fi
               else
-                  error "Homebrew must be installed to continue!"
+                  error "Homebrew installation is required to continue!"
                   exit 1
               fi
           fi
@@ -165,7 +166,7 @@ check_and_install_deps() {
             elif command -v pacman &>/dev/null; then
                 sudo pacman -Sy --noconfirm "${missing[@]}"
             else
-                error "Unrecognized Linux distribution, please manually install dependencies: ${missing[*]}"
+                error "Unrecognized Linux distribution, please install dependencies manually: ${missing[*]}"
                 exit 1
             fi
             ;;
@@ -186,7 +187,7 @@ check_and_install_deps() {
     success "All dependencies have been successfully installed!"
 }
 
-# ============ Parse Product =============
+# ============ Product Parsing =============
 parse_product_from_json() {
     local index="$1"
     local name=$(echo "$PRODUCTS" | jq -r ".[$index].name")
@@ -194,7 +195,7 @@ parse_product_from_json() {
     echo "$name|$code"
 }
 
-# ============ Log Functions =============
+# ============ Logging Functions =============
 log() {
     local level="$1"
     local message="$2"
@@ -237,13 +238,13 @@ JJJJJJ   EEEEEEE   TTTTTTTT  BBBBBBB    RRRRRR    AAAAAA    IIIIIIII  NNNN   NN 
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN NNN NN   SS
    JJ    EEEEE        TT     BBBBBBB    RRRRRR    AAAAAA       II     NN  NNNNN    SSSSS
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN   NNNN         SS
- JJ JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN    NNN          SS
-  JJJJ    EEEEEEE      TT     BBBBBBB    RR   RR   AA  AA    IIIIIIII  NN    NNN    SSSSSS
+JJ JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN    NNN          SS
+ JJJJ    EEEEEEE      TT     BBBBBBB    RR   RR   AA  AA    IIIIIIII  NN    NNN    SSSSSS
 EOF
 }
 
-# ============ Clean Environment Variables =============
-# Clean up other tool leftovers
+# ============ Environment Variable Cleanup =============
+#Clean up other tools' residues
 remove_env_other(){
   OS_NAME=$(uname -s)
   JB_PRODUCTS="idea clion phpstorm goland pycharm webstorm webide rider datagrip rubymine appcode dataspell gateway jetbrains_client jetbrainsclient"
@@ -286,7 +287,7 @@ remove_env_other(){
     sed -i '/___MY_VMOPTIONS_SHELL_FILE="${HOME}\/\.jetbrains\.vmoptions\.sh"; if /d' "${ZSH_PROFILE_PATH}" >/dev/null 2>&1
     rm -rf "${KDE_ENV_DIR}/${MY_VMOPTIONS_SHELL_NAME}"
   fi
-  debug "Cleaned up third-party tool environment variables"
+  debug "Third-party tool environment variables cleanup completed"
 }
 remove_env_item_vars() {
     local shell_files=(
@@ -296,17 +297,17 @@ remove_env_item_vars() {
         "${USER_HOME}/.profile"
     )
 
-    # Parse product
+    # Parse products
     local index=0
     local product_count=$(echo "$PRODUCTS" | jq length)
 
-    # First filter for existing files
+    # Filter existing files first
     local existing_files=()
     for file in "${shell_files[@]}"; do
         [ -f "$file" ] && existing_files+=("$file")
     done
 
-    # If no existing files, return directly
+    # Return directly if no existing files
     [ ${#existing_files[@]} -eq 0 ] && {
         debug "No environment variable files found, skipping"
         return
@@ -315,19 +316,19 @@ remove_env_item_vars() {
     # Environment variable backup directory
     local dir_date_backup="$dir_backups/$(date +%s)"
     for file in "${existing_files[@]}"; do
-      # Check if the file contains the specified environment variable
+      # Check if file contains specified environment variables
         if [ ! -w "$file" ]; then
             warning "File $file is not writable, skipping modification" >&2
             continue
         fi
 
-        # Backup environment variable file to dir_backups/timestamp
+        # Backup environment variable file to dir_backups/time
         if [ ! -d "$dir_date_backup" ]; then
             mkdir -p "$dir_date_backup"
         fi
 
         cp "$file" "${dir_date_backup}/_$(basename ${file})"
-        debug "Backed up environment variable file: $file, $dir_date_backup,_$(basename ${file})"
+        debug "Backup environment variable file: $file, $dir_date_backup,_$(basename ${file})"
 
         # Detect environment variable configuration file
         local index=0
@@ -342,7 +343,7 @@ remove_env_item_vars() {
             # Check if file contains upper_key
             if grep -q "^${upper_key}" "$file"; then
                 sed -i -E "/${upper_key}/d" "$file"
-                debug "Removed environment variable: $file,$upper_key"
+                debug "Delete environment variable: $file,$upper_key"
             fi
             ((index++))
         done
@@ -351,28 +352,28 @@ remove_env_item_vars() {
 }
 
 remove_env_vars() {
-    info "Starting to clean up JetBrains-related environment variables"
+    info "Starting cleanup of JetBrains related environment variables"
     remove_env_item_vars
-    # Remove other activation tool leftovers
+    # Delete other activation tool residues
     remove_env_other
 }
 
-# ============ Read User License Information =============
+# ============ User License Information Input =============
 validate_date_format() {
     local input="$1"
 
     # Step 1: Check if it matches yyyy-MM-dd format
     if [[ ! "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
-        warning "Please enter standard format: yyyy-MM-dd (for example: 2099-12-31)"
+        warning "Please enter standard format: yyyy-MM-dd (example: 2099-12-31)"
         return 1
     fi
 
-    # Step 2: Return original value (no need to call date to verify authenticity)
+    # Step 2: Return original value directly (no need to call date for validation)
     echo "$input"
     return 0
 }
 read_license_info() {
-    read -p "Custom license name (press Enter for default ckey.run): " license_name
+    read -p "Custom license name (Enter for default ckey.run): " license_name
     license_name=${license_name:-ckey.run}
 
     local default_expiry="2099-12-31"
@@ -380,14 +381,14 @@ read_license_info() {
     local valid=false
 
     while [ "$valid" == "false" ]; do
-        read -p "Custom license date (press Enter for $default_expiry, format yyyy-MM-dd): " expiry_input
+        read -p "Custom license date (Enter for default $default_expiry, format yyyy-MM-dd): " expiry_input
         expiry_input=${expiry_input:-$default_expiry}
-        debug "Entered license date: $expiry_input"
+        debug  "Input license date: $expiry_input"
         if expiry=$(validate_date_format "$expiry_input"); then
             expiry="$expiry"
             valid=true
         else
-            warning "Invalid date format, please enter correct yyyy-MM-dd format (for example: 2099-12-31)"
+            warning "Date format is invalid, please enter correct yyyy-MM-dd format (example: 2099-12-31)"
         fi
     done
 
@@ -405,13 +406,13 @@ EOF
 # ============ Create Working Directory =============
 do_create_work_dir() {
     if [[ "${dir_work}" == "/" || -z "${dir_work}" ]]; then
-        error "Detected illegal path: ${dir_work}, please check configuration."
+        error "Illegal path detected: ${dir_work}, please check configuration."
         exit 1
     fi
 
     if [ -d "${dir_work}" ]; then
         rm -rf "${dir_plugins}" "${dir_config}" "${file_netfilter_jar}" || {
-            error "Files are in use, please close all JetBrains IDEs before trying again!"
+            error "Files are in use, please close all JetBrains IDEs first!"
             exit 1
         }
     fi
@@ -419,7 +420,7 @@ do_create_work_dir() {
          error "Failed to create working directory: ${dir_config} or ${dir_plugins} or ${dir_backups}"
          exit 1
      }
-    debug "Created working directory: ${dir_work}"
+    debug "Create working directory: ${dir_work}"
 }
 
 # ============ Download Files =============
@@ -439,7 +440,7 @@ download_one_file() {
         if command -v $SHA_TOOL &>/dev/null; then
             sha1_hash=$($SHA_TOOL "$file_save_path" | awk '{print $1}')
         else
-            warning "$SHA_TOOL tool not found, skipping SHA-1 verification"
+            warning "SHA tool not found, skipping SHA-1 verification"
             return
         fi
         debug "sha1: $sha1_hash"
@@ -478,8 +479,8 @@ do_download_resources() {
     local total_files=${#resources[@]}
     local count=0
 
-    debug  "Source ja-netfilter project address: https://gitee.com/ja-netfilter/ja-netfilter/releases/tag/2022.2.0"
-    debug  "To check if the downloaded .jar file has been tampered with, please verify that the sha1 value matches the source project file"
+    debug  "Original ja-netfilter project address: https://gitee.com/ja-netfilter/ja-netfilter/releases/tag/2022.2.0"
+    debug  "If you need to check if downloaded .jar files have been tampered with, please verify SHA-1 values match the original project files"
     for item in "${resources[@]}"; do
         IFS='|' read -r url path <<< "$item"
         download_one_file "$url" "$path"
@@ -489,7 +490,7 @@ do_download_resources() {
     echo -e "\n"
 }
 
-# ============ Clean and Update .vmoptions File =============
+# ============ Clean and Update .vmoptions Files =============
 clean_vmoptions() {
     local file="$1"
     if [ ! -f "$file" ]; then
@@ -520,7 +521,7 @@ append_vmoptions() {
     local file="$1"
     if [ ! -f "$file" ]; then
         touch "$file" || {
-            error "Generate vm: Failed to create: $file"
+            error "Generate vm: Creation failed: $file"
             return
         }
     fi
@@ -534,69 +535,7 @@ EOF
     debug "Generate vm: $file"
 }
 
-# ============ Auto Get Activation Code =============
-fetch_license_key() {
-    local obj_product_name="$1"
-    local obj_product_code="$2"
-    local dir_product_name="$3"
-    
-    debug "Getting activation code for ${dir_product_name}..."
-    
-    # Build request data
-    local json_body=$(jq --arg code "$obj_product_code" '.productCode = $code' <<< "$LICENSE_JSON")
-    
-    # Send request to get activation code
-    local response=$(curl -s -X POST "$URL_LICENSE" \
-        -H "Content-Type: application/json" \
-        -d "$json_body")
-    
-    # Check response
-    if [ $? -eq 0 ] && [ -n "$response" ]; then
-        # Try to parse JSON response
-        local license_key=$(echo "$response" | jq -r '.licenseKey // empty' 2>/dev/null)
-        
-        if [ -n "$license_key" ] && [ "$license_key" != "null" ]; then
-            echo "$license_key"
-            return 0
-        fi
-        
-        # If JSON parsing fails, try to extract activation code directly from text
-        # Activation code is usually a string of characters, may contain letters, numbers and symbols
-        local extracted_key=$(echo "$response" | grep -oE '[A-Za-z0-9\-]{20,}' | head -1)
-        if [ -n "$extracted_key" ]; then
-            echo "$extracted_key"
-            return 0
-        fi
-    fi
-    
-    debug "Failed to get activation code for ${dir_product_name}"
-    return 1
-}
-
-# ============ Display Activation Code =============
-display_license_key() {
-    local product_name="$1"
-    local license_key="$2"
-    
-    if [ -n "$license_key" ]; then
-        echo ""
-        info "=== ${product_name} Activation Code ==="
-        echo -e "${GREEN}${license_key}${NC}"
-        echo "================================="
-        echo ""
-        
-        # Try to copy to clipboard (if supported)
-        if command -v xclip &>/dev/null; then
-            echo -n "$license_key" | xclip -selection clipboard 2>/dev/null && debug "Activation code has been copied to clipboard"
-        elif command -v pbcopy &>/dev/null; then
-            echo -n "$license_key" | pbcopy 2>/dev/null && debug "Activation code has been copied to clipboard"
-        fi
-    else
-        warning "Failed to get activation code for ${product_name}"
-    fi
-}
-
-# ============ Generate Activation Code =============
+# ============ Generate License Key =============
 generate_license() {
     local obj_product_name="$1"
     local obj_product_code="$2"
@@ -610,16 +549,24 @@ generate_license() {
     curl -s -X POST "$URL_LICENSE" \
         -H "Content-Type: application/json" \
         -d "$json_body" \
-        -o "$file_license" > /dev/null
+        -o "$file_license"
 
-    if [ $? -eq 0 ]; then
+    if [ $? -eq 0 ] && [ -f "$file_license" ]; then
         success "${dir_product_name} activation successful!"
+
+        # Show license key in terminal
+        info "=== LICENSE KEY FOR ${dir_product_name} ==="
+        echo -e "${GREEN}"
+        cat "$file_license"
+        echo -e "${NC}"
+        info "Copy the key above and use it to activate ${dir_product_name}"
+        echo ""
     else
-        warning "${dir_product_name} requires manual activation code input!"
+        warning "${dir_product_name} requires manual license key entry!"
     fi
 }
 
-# ============ Handle Single JetBrains Product =============
+# ============ Process Individual JetBrains Product =============
 handle_jetbrains_dir() {
     local dir="$1"
     local dir_product_name=$(basename "$dir")
@@ -658,13 +605,13 @@ handle_jetbrains_dir() {
 
     local dir_bin="${install_path}/bin"
     [ -d "$dir_bin" ] || {
-        warning "Bin directory does not exist for ${dir_product_name}, please confirm if it's correctly installed!"
+        warning "${dir_product_name} bin directory does not exist, please confirm proper installation!"
         return
     }
 
     local dir_config_product="${dir_config_jb}/${dir_product_name}"
 
-    # First find all .vmoptions files
+    # Find all .vmoptions files first
     files=("${dir_config_product}"/*${FILE_VMOPTIONS})
 
     # Check if files were actually found
@@ -678,7 +625,7 @@ handle_jetbrains_dir() {
       append_vmoptions "${dir_config_product}/${obj_product_name}${FILE_VMOPTIONS}"
     fi
 
-    # Check if ${dir_config_product}/jetbrains_client.vmoptions exists, if not create a default one
+    # Check if ${dir_config_product}/jetbrains_client.vmoptions exists, create default if not
    local file_jetbrains_client="${dir_config_product}/jetbrains_client.vmoptions"
     if [ ! -f "${file_jetbrains_client}" ]; then
         append_vmoptions "${file_jetbrains_client}"
@@ -687,139 +634,7 @@ handle_jetbrains_dir() {
         append_vmoptions "${file_jetbrains_client}"
     fi
 
-    # Configure product, activation code will be obtained at the end
     generate_license "$obj_product_name" "$obj_product_code" "$dir_product_name"
-}
-
-# ============ Check Installed Product =============
-check_installed_product() {
-    local dir="$1"
-    local dir_product_name=$(basename "$dir")
-    local obj_product_name=""
-    local obj_product_code=""
-
-    # Find matching product
-    for ((i = 0; i < $(echo "$PRODUCTS" | jq length); i++)); do
-        IFS='|' read -r name code <<< "$(parse_product_from_json "$i")"
-        local lowercase_dir=$(echo "${dir_product_name}" | tr '[:upper:]' '[:lower:]')
-        if [[ "$lowercase_dir" == *"$name"* ]]; then
-            obj_product_name="$name"
-            obj_product_code="$code"
-            break
-        fi
-    done
-
-    # If no matching product found, return 1
-    [ -z "$obj_product_name" ] && return 1
-
-    # Check if product is actually installed
-    local file_home="${dir}/.home"
-    if [ ! -f "$file_home" ]; then
-        debug "Product ${dir_product_name} does not have .home file, skipping"
-        return 1
-    fi
-
-    local install_path=$(cat "$file_home")
-    if [ ! -d "$install_path" ]; then
-        debug "Installation path for product ${dir_product_name} does not exist, skipping"
-        return 1
-    fi
-
-    local dir_bin="${install_path}/bin"
-    if [ ! -d "$dir_bin" ]; then
-        debug "Bin directory for product ${dir_product_name} does not exist, skipping"
-        return 1
-    fi
-
-    # Return product info
-    echo "${obj_product_name}|${obj_product_code}|${dir_product_name}|${dir}"
-    return 0
-}
-
-# ============ Get All Installed Products List =============
-get_installed_products() {
-    local installed_products=()
-
-    if [ ! -d "${dir_cache_jb}" ]; then
-        warning "JetBrains cache directory not found: ${dir_cache_jb}"
-        return 1
-    fi
-
-    for dir in "${dir_cache_jb}"/*; do
-        if [ -d "$dir" ]; then
-            local product_info=$(check_installed_product "$dir")
-            if [ $? -eq 0 ] && [ -n "$product_info" ]; then
-                installed_products+=("$product_info")
-            fi
-        fi
-    done
-
-    # Return installed products list
-    if [ ${#installed_products[@]} -gt 0 ]; then
-        printf '%s\n' "${installed_products[@]}"
-        return 0
-    else
-        warning "No JetBrains products found"
-        return 1
-    fi
-}
-
-# ============ Get Activation Codes Only for Installed Products =============
-fetch_licenses_for_installed_only() {
-    info "Getting activation codes for installed products..."
-
-    local success_count=0
-    local total_count=0
-
-    # Get installed products list
-    local installed_products_list=$(get_installed_products)
-    if [ $? -ne 0 ]; then
-        warning "No installed products found, cannot get activation codes"
-        return 1
-    fi
-
-    # Process installed products
-    while IFS= read -r product_info; do
-        if [ -n "$product_info" ]; then
-            IFS='|' read -r obj_product_name obj_product_code dir_product_name dir_path <<< "$product_info"
-            ((total_count++))
-
-            # Get activation code
-            local license_key=$(fetch_license_key "$obj_product_name" "$obj_product_code" "$dir_product_name")
-            if [ $? -eq 0 ]; then
-                display_license_key "$dir_product_name" "$license_key"
-                ((success_count++))
-            else
-                warning "Failed to get activation code for ${dir_product_name}"
-            fi
-        fi
-    done <<< "$installed_products_list"
-
-    info "Activation code retrieval completed for installed products: ${success_count}/${total_count} products successful"
-}
-# ============ Auto Get All Activation Codes =============
-fetch_all_license_keys() {
-    info "Getting activation codes for all products..."
-    
-    local success_count=0
-    local total_count=0
-    
-    # Iterate through all products
-    for ((i = 0; i < $(echo "$PRODUCTS" | jq length); i++)); do
-        IFS='|' read -r name code <<< "$(parse_product_from_json "$i")"
-        ((total_count++))
-        
-        # Get activation code
-        local license_key=$(fetch_license_key "$name" "$code" "$name")
-        if [ $? -eq 0 ]; then
-            display_license_key "$name" "$license_key"
-            ((success_count++))
-        else
-            warning "Failed to get activation code for ${name}"
-        fi
-    done
-    
-    info "Activation code retrieval completed: ${success_count}/${total_count} products successful"
 }
 
 # ============ Main Process =============
@@ -828,18 +643,18 @@ main() {
     show_ascii_jb
     info "\rWelcome to JetBrains Activation Tool | CodeKey Run"
     warning "Script date: 2025-8-1 11:00:35"
-    error "Note: Running this script will activate all products by default, regardless of whether they were previously activated!!!"
-    warning "Please ensure the software to be activated is closed, press Enter to continue..."
+    error "Note: The script will activate ALL products by default, regardless of previous activation status!!!"
+    warning "Please ensure all software is closed, press Enter to continue..."
     read -r
 
     read_license_info
 
-    info "Processing, please wait patiently..."
+    info "Processing, please wait..."
 
     check_and_install_deps
 
     if [ ! -d "${dir_config_jb}" ]; then
-        error "${dir_config_jb} directory not found"
+        error "Directory not found: ${dir_config_jb}"
         exit 1
     fi
 
@@ -855,8 +670,11 @@ main() {
         [ -d "$dir" ] && handle_jetbrains_dir "$dir"
     done
 
-    info "All items processing completed, getting activation codes automatically..."
-    fetch_licenses_for_installed_only
+    info "All items processed!"
+    info "License keys are shown above. Copy them and use for activation."
+    info "Enjoy using JetBrains IDE!"
 }
 
 main "$@"
+# Auto-deletion disabled - script remains for reuse
+# rm -f "${BASH_SOURCE[0]}"
