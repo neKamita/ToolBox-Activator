@@ -52,14 +52,14 @@ if [[ "$OS" == "macOS" ]]; then
     USER_HOME="/Users/${ORIGINAL_USER}"
 fi
 
-# Working path
+# Working paths
 dir_work="${USER_HOME}/.jb_run"
 dir_config="${dir_work}/config"
 dir_plugins="${dir_work}/plugins"
 dir_backups="${dir_work}/backups"
 file_netfilter_jar="${dir_work}/ja-netfilter.jar"
 
-# JetBrains directory
+# JetBrains directories
 if [[ "$OS" == "macOS" ]]; then
     dir_cache_jb="${USER_HOME}/Library/Caches/JetBrains"
     dir_config_jb="${USER_HOME}/Library/Application Support/JetBrains"
@@ -112,19 +112,6 @@ check_and_install_deps() {
             missing+=("$dep")
         fi
     done
-
-    # Check for clipboard tools
-    case "$OS" in
-        "macOS")
-            # macOS has pbcopy by default
-            ;;
-        "Linux")
-            if ! command -v xclip &>/dev/null && ! command -v xsel &>/dev/null; then
-                warning "No clipboard tool found. Installing xclip..."
-                missing+=("xclip")
-            fi
-            ;;
-    esac
 
     if [ ${#missing[@]} -eq 0 ]; then
         info "All dependencies are already installed."
@@ -196,7 +183,7 @@ check_and_install_deps() {
         fi
     done
 
-    success "All dependencies installed successfully!"
+    success "All dependencies have been successfully installed!"
 }
 
 # ============ Parse Product =============
@@ -207,73 +194,7 @@ parse_product_from_json() {
     echo "$name|$code"
 }
 
-# ============ Product Selection =============
-show_product_menu() {
-    local selected_products=()
-    local product_count=$(echo "$PRODUCTS" | jq length)
-    
-    echo "Available JetBrains products:"
-    echo "--------------------------------"
-    
-    for ((i=0; i<product_count; i++)); do
-        IFS='|' read -r name code <<< "$(parse_product_from_json "$i")"
-        echo "$((i+1)). $name"
-    done
-    
-    echo "--------------------------------"
-    echo "0. Select all products"
-    echo "--------------------------------"
-    
-    while true; do
-        read -p "Enter product numbers (separated by spaces, or 0 for all): " -r selections
-        
-        # Validate input
-        if [[ "$selections" == "0" ]]; then
-            # Select all products
-            for ((i=0; i<product_count; i++)); do
-                selected_products+=("$i")
-            done
-            break
-        fi
-        
-        # Parse individual selections
-        local valid_selections=true
-        for selection in $selections; do
-            if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le "$product_count" ]; then
-                selected_products+=("$((selection-1))")
-            else
-                echo "Invalid selection: $selection. Please enter valid numbers."
-                valid_selections=false
-                break
-            fi
-        done
-        
-        if [ "$valid_selections" = true ]; then
-            # Remove duplicates
-            IFS=$'\n' sorted=($(sort -u <<<"${selected_products[*]}"))
-            unset IFS
-            selected_products=("${sorted[@]}")
-            
-            # Show selected products
-            echo "Selected products:"
-            for index in "${selected_products[@]}"; do
-                IFS='|' read -r name code <<< "$(parse_product_from_json "$index")"
-                echo "  - $name"
-            done
-            
-            read -p "Is this correct? (y/n): " -r confirm
-            if [[ "$confirm" =~ ^[yY]$ ]]; then
-                break
-            else
-                selected_products=()
-            fi
-        fi
-    done
-    
-    echo "${selected_products[@]}"
-}
-
-# ============ Logging Functions =============
+# ============ Log Functions =============
 log() {
     local level="$1"
     local message="$2"
@@ -375,17 +296,17 @@ remove_env_item_vars() {
         "${USER_HOME}/.profile"
     )
 
-    # Parse products
+    # Parse product
     local index=0
     local product_count=$(echo "$PRODUCTS" | jq length)
 
-    # First filter out existing files
+    # First filter for existing files
     local existing_files=()
     for file in "${shell_files[@]}"; do
         [ -f "$file" ] && existing_files+=("$file")
     done
 
-    # If no existing files found, return directly
+    # If no existing files, return directly
     [ ${#existing_files[@]} -eq 0 ] && {
         debug "No environment variable files found, skipping"
         return
@@ -394,7 +315,7 @@ remove_env_item_vars() {
     # Environment variable backup directory
     local dir_date_backup="$dir_backups/$(date +%s)"
     for file in "${existing_files[@]}"; do
-      # Check if file contains specified environment variables
+      # Check if the file contains the specified environment variable
         if [ ! -w "$file" ]; then
             warning "File $file is not writable, skipping modification" >&2
             continue
@@ -430,7 +351,7 @@ remove_env_item_vars() {
 }
 
 remove_env_vars() {
-    info "Starting to clean JetBrains related environment variables"
+    info "Starting to clean up JetBrains-related environment variables"
     remove_env_item_vars
     # Remove other activation tool leftovers
     remove_env_other
@@ -440,13 +361,13 @@ remove_env_vars() {
 validate_date_format() {
     local input="$1"
 
-    # First step: check if it matches yyyy-MM-dd format
+    # Step 1: Check if it matches yyyy-MM-dd format
     if [[ ! "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
-        warning "Please enter standard format: yyyy-MM-dd (e.g., 2099-12-31)"
+        warning "Please enter standard format: yyyy-MM-dd (for example: 2099-12-31)"
         return 1
     fi
 
-    # Second step: return original value (no need to call date to verify authenticity)
+    # Step 2: Return original value (no need to call date to verify authenticity)
     echo "$input"
     return 0
 }
@@ -459,14 +380,14 @@ read_license_info() {
     local valid=false
 
     while [ "$valid" == "false" ]; do
-        read -p "Custom license expiry date (press Enter for $default_expiry, format yyyy-MM-dd): " expiry_input
+        read -p "Custom license date (press Enter for $default_expiry, format yyyy-MM-dd): " expiry_input
         expiry_input=${expiry_input:-$default_expiry}
-        debug  "Entered license date: $expiry_input"
+        debug "Entered license date: $expiry_input"
         if expiry=$(validate_date_format "$expiry_input"); then
             expiry="$expiry"
             valid=true
         else
-            warning "Invalid date format, please enter correct yyyy-MM-dd format (e.g., 2099-12-31)"
+            warning "Invalid date format, please enter correct yyyy-MM-dd format (for example: 2099-12-31)"
         fi
     done
 
@@ -558,7 +479,7 @@ do_download_resources() {
     local count=0
 
     debug  "Source ja-netfilter project address: https://gitee.com/ja-netfilter/ja-netfilter/releases/tag/2022.2.0"
-    debug  "To check if the downloaded .jar has been tampered with, please verify that the sha1 value matches the source project files"
+    debug  "To check if the downloaded .jar file has been tampered with, please verify that the sha1 value matches the source project file"
     for item in "${resources[@]}"; do
         IFS='|' read -r url path <<< "$item"
         download_one_file "$url" "$path"
@@ -568,7 +489,7 @@ do_download_resources() {
     echo -e "\n"
 }
 
-# ============ Clean and Update .vmoptions Files =============
+# ============ Clean and Update .vmoptions File =============
 clean_vmoptions() {
     local file="$1"
     if [ ! -f "$file" ]; then
@@ -613,32 +534,66 @@ EOF
     debug "Generate vm: $file"
 }
 
-# ============ Clipboard Functions =============
-# NEW FEATURE: Copy activation codes to clipboard instead of opening browser
-copy_to_clipboard() {
-    local text="$1"
+# ============ Auto Get Activation Code =============
+fetch_license_key() {
+    local obj_product_name="$1"
+    local obj_product_code="$2"
+    local dir_product_name="$3"
     
-    case "$OS" in
-        "macOS")
-            # Use pbcopy which is available by default on macOS
-            echo -n "$text" | pbcopy
-            ;;
-        "Linux")
-            # Try different clipboard tools - xclip is preferred, xsel as fallback
-            if command -v xclip &>/dev/null; then
-                echo -n "$text" | xclip -selection clipboard
-            elif command -v xsel &>/dev/null; then
-                echo -n "$text" | xsel --clipboard --input
-            else
-                return 1
-            fi
-            ;;
-        *)
-            return 1
-            ;;
-    esac
+    debug "Getting activation code for ${dir_product_name}..."
     
-    return $?
+    # Build request data
+    local json_body=$(jq --arg code "$obj_product_code" '.productCode = $code' <<< "$LICENSE_JSON")
+    
+    # Send request to get activation code
+    local response=$(curl -s -X POST "$URL_LICENSE" \
+        -H "Content-Type: application/json" \
+        -d "$json_body")
+    
+    # Check response
+    if [ $? -eq 0 ] && [ -n "$response" ]; then
+        # Try to parse JSON response
+        local license_key=$(echo "$response" | jq -r '.licenseKey // empty' 2>/dev/null)
+        
+        if [ -n "$license_key" ] && [ "$license_key" != "null" ]; then
+            echo "$license_key"
+            return 0
+        fi
+        
+        # If JSON parsing fails, try to extract activation code directly from text
+        # Activation code is usually a string of characters, may contain letters, numbers and symbols
+        local extracted_key=$(echo "$response" | grep -oE '[A-Za-z0-9\-]{20,}' | head -1)
+        if [ -n "$extracted_key" ]; then
+            echo "$extracted_key"
+            return 0
+        fi
+    fi
+    
+    debug "Failed to get activation code for ${dir_product_name}"
+    return 1
+}
+
+# ============ Display Activation Code =============
+display_license_key() {
+    local product_name="$1"
+    local license_key="$2"
+    
+    if [ -n "$license_key" ]; then
+        echo ""
+        info "=== ${product_name} Activation Code ==="
+        echo -e "${GREEN}${license_key}${NC}"
+        echo "================================="
+        echo ""
+        
+        # Try to copy to clipboard (if supported)
+        if command -v xclip &>/dev/null; then
+            echo -n "$license_key" | xclip -selection clipboard 2>/dev/null && debug "Activation code has been copied to clipboard"
+        elif command -v pbcopy &>/dev/null; then
+            echo -n "$license_key" | pbcopy 2>/dev/null && debug "Activation code has been copied to clipboard"
+        fi
+    else
+        warning "Failed to get activation code for ${product_name}"
+    fi
 }
 
 # ============ Generate Activation Code =============
@@ -659,18 +614,8 @@ generate_license() {
 
     if [ $? -eq 0 ]; then
         success "${dir_product_name} activation successful!"
-        
-        # Read the generated license and copy to clipboard
-        if [ -f "$file_license" ]; then
-            local license_content=$(cat "$file_license")
-            if copy_to_clipboard "$license_content"; then
-                info "Activation code copied to clipboard for ${dir_product_name}"
-            else
-                warning "Failed to copy activation code to clipboard for ${dir_product_name}"
-            fi
-        fi
     else
-        warning "${dir_product_name} requires manual license key input!"
+        warning "${dir_product_name} requires manual activation code input!"
     fi
 }
 
@@ -713,7 +658,7 @@ handle_jetbrains_dir() {
 
     local dir_bin="${install_path}/bin"
     [ -d "$dir_bin" ] || {
-        warning "Bin directory does not exist for ${dir_product_name}, please confirm if it's properly installed!"
+        warning "Bin directory does not exist for ${dir_product_name}, please confirm if it's correctly installed!"
         return
     }
 
@@ -742,7 +687,139 @@ handle_jetbrains_dir() {
         append_vmoptions "${file_jetbrains_client}"
     fi
 
+    # Configure product, activation code will be obtained at the end
     generate_license "$obj_product_name" "$obj_product_code" "$dir_product_name"
+}
+
+# ============ Check Installed Product =============
+check_installed_product() {
+    local dir="$1"
+    local dir_product_name=$(basename "$dir")
+    local obj_product_name=""
+    local obj_product_code=""
+
+    # Find matching product
+    for ((i = 0; i < $(echo "$PRODUCTS" | jq length); i++)); do
+        IFS='|' read -r name code <<< "$(parse_product_from_json "$i")"
+        local lowercase_dir=$(echo "${dir_product_name}" | tr '[:upper:]' '[:lower:]')
+        if [[ "$lowercase_dir" == *"$name"* ]]; then
+            obj_product_name="$name"
+            obj_product_code="$code"
+            break
+        fi
+    done
+
+    # If no matching product found, return 1
+    [ -z "$obj_product_name" ] && return 1
+
+    # Check if product is actually installed
+    local file_home="${dir}/.home"
+    if [ ! -f "$file_home" ]; then
+        debug "Product ${dir_product_name} does not have .home file, skipping"
+        return 1
+    fi
+
+    local install_path=$(cat "$file_home")
+    if [ ! -d "$install_path" ]; then
+        debug "Installation path for product ${dir_product_name} does not exist, skipping"
+        return 1
+    fi
+
+    local dir_bin="${install_path}/bin"
+    if [ ! -d "$dir_bin" ]; then
+        debug "Bin directory for product ${dir_product_name} does not exist, skipping"
+        return 1
+    fi
+
+    # Return product info
+    echo "${obj_product_name}|${obj_product_code}|${dir_product_name}|${dir}"
+    return 0
+}
+
+# ============ Get All Installed Products List =============
+get_installed_products() {
+    local installed_products=()
+
+    if [ ! -d "${dir_cache_jb}" ]; then
+        warning "JetBrains cache directory not found: ${dir_cache_jb}"
+        return 1
+    fi
+
+    for dir in "${dir_cache_jb}"/*; do
+        if [ -d "$dir" ]; then
+            local product_info=$(check_installed_product "$dir")
+            if [ $? -eq 0 ] && [ -n "$product_info" ]; then
+                installed_products+=("$product_info")
+            fi
+        fi
+    done
+
+    # Return installed products list
+    if [ ${#installed_products[@]} -gt 0 ]; then
+        printf '%s\n' "${installed_products[@]}"
+        return 0
+    else
+        warning "No JetBrains products found"
+        return 1
+    fi
+}
+
+# ============ Get Activation Codes Only for Installed Products =============
+fetch_licenses_for_installed_only() {
+    info "Getting activation codes for installed products..."
+
+    local success_count=0
+    local total_count=0
+
+    # Get installed products list
+    local installed_products_list=$(get_installed_products)
+    if [ $? -ne 0 ]; then
+        warning "No installed products found, cannot get activation codes"
+        return 1
+    fi
+
+    # Process installed products
+    while IFS= read -r product_info; do
+        if [ -n "$product_info" ]; then
+            IFS='|' read -r obj_product_name obj_product_code dir_product_name dir_path <<< "$product_info"
+            ((total_count++))
+
+            # Get activation code
+            local license_key=$(fetch_license_key "$obj_product_name" "$obj_product_code" "$dir_product_name")
+            if [ $? -eq 0 ]; then
+                display_license_key "$dir_product_name" "$license_key"
+                ((success_count++))
+            else
+                warning "Failed to get activation code for ${dir_product_name}"
+            fi
+        fi
+    done <<< "$installed_products_list"
+
+    info "Activation code retrieval completed for installed products: ${success_count}/${total_count} products successful"
+}
+# ============ Auto Get All Activation Codes =============
+fetch_all_license_keys() {
+    info "Getting activation codes for all products..."
+    
+    local success_count=0
+    local total_count=0
+    
+    # Iterate through all products
+    for ((i = 0; i < $(echo "$PRODUCTS" | jq length); i++)); do
+        IFS='|' read -r name code <<< "$(parse_product_from_json "$i")"
+        ((total_count++))
+        
+        # Get activation code
+        local license_key=$(fetch_license_key "$name" "$code" "$name")
+        if [ $? -eq 0 ]; then
+            display_license_key "$name" "$license_key"
+            ((success_count++))
+        else
+            warning "Failed to get activation code for ${name}"
+        fi
+    done
+    
+    info "Activation code retrieval completed: ${success_count}/${total_count} products successful"
 }
 
 # ============ Main Process =============
@@ -751,28 +828,11 @@ main() {
     show_ascii_jb
     info "\rWelcome to JetBrains Activation Tool | CodeKey Run"
     warning "Script date: 2025-8-1 11:00:35"
-    error "Note: By default, the script will activate all products, regardless of whether they have been activated before!!!"
-    warning "Please ensure that the software to be activated is closed, press Enter to continue..."
+    error "Note: Running this script will activate all products by default, regardless of whether they were previously activated!!!"
+    warning "Please ensure the software to be activated is closed, press Enter to continue..."
     read -r
 
     read_license_info
-
-    # Get product selection from user - NEW FEATURE
-    read -p "Do you want to activate all products or select specific ones? (all/select): " -r choice
-    if [[ "$choice" =~ ^[sS]$ ]]; then
-        selected_products=($(show_product_menu))
-        if [ ${#selected_products[@]} -eq 0 ]; then
-            error "No products selected. Exiting."
-            exit 1
-        fi
-    else
-        # Select all products
-        local product_count=$(echo "$PRODUCTS" | jq length)
-        selected_products=()
-        for ((i=0; i<product_count; i++)); do
-            selected_products+=("$i")
-        done
-    fi
 
     info "Processing, please wait patiently..."
 
@@ -791,41 +851,12 @@ main() {
 
     do_download_resources
 
-    # Process selected products
-    local activated_products=()
-    for product_index in "${selected_products[@]}"; do
-        IFS='|' read -r product_name product_code <<< "$(parse_product_from_json "$product_index")"
-        
-        # Find and process the JetBrains directory for this product
-        for dir in "${dir_cache_jb}"/*; do
-            [ -d "$dir" ] || continue
-            
-            local dir_product_name=$(basename "$dir")
-            local lowercase_dir=$(echo "${dir_product_name}" | tr '[:upper:]' '[:lower:]')
-            
-            if [[ "$lowercase_dir" == *"$product_name"* ]]; then
-                handle_jetbrains_dir "$dir"
-                activated_products+=("$dir_product_name")
-                break
-            fi
-        done
+    for dir in "${dir_cache_jb}"/*; do
+        [ -d "$dir" ] && handle_jetbrains_dir "$dir"
     done
 
-    if [ ${#activated_products[@]} -gt 0 ]; then
-        info "Activation completed for the following products:"
-        for product in "${activated_products[@]}"; do
-            info "  - $product"
-        done
-        info "Activation codes have been copied to clipboard for each product."
-    else
-        warning "No products were activated. Please check if JetBrains products are installed."
-    fi
-
-    # MODIFIED: Don't open browser anymore - codes are copied to clipboard
-    info "Activation process completed successfully!"
+    info "All items processing completed, getting activation codes automatically..."
+    fetch_licenses_for_installed_only
 }
 
 main "$@"
-# Delete self
-rm -f "${BASH_SOURCE[0]}"
-󰣇 ~ ❯  
