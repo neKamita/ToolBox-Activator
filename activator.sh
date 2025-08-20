@@ -113,6 +113,19 @@ check_and_install_deps() {
         fi
     done
 
+    # Check for clipboard tools
+    case "$OS" in
+        "macOS")
+            # macOS has pbcopy by default
+            ;;
+        "Linux")
+            if ! command -v xclip &>/dev/null && ! command -v xsel &>/dev/null; then
+                warning "No clipboard tool found. Installing xclip..."
+                missing+=("xclip")
+            fi
+            ;;
+    esac
+
     if [ ${#missing[@]} -eq 0 ]; then
         info "All dependencies are already installed."
         return
@@ -192,6 +205,72 @@ parse_product_from_json() {
     local name=$(echo "$PRODUCTS" | jq -r ".[$index].name")
     local code=$(echo "$PRODUCTS" | jq -r ".[$index].productCode")
     echo "$name|$code"
+}
+
+# ============ Product Selection =============
+show_product_menu() {
+    local selected_products=()
+    local product_count=$(echo "$PRODUCTS" | jq length)
+    
+    echo "Available JetBrains products:"
+    echo "--------------------------------"
+    
+    for ((i=0; i<product_count; i++)); do
+        IFS='|' read -r name code <<< "$(parse_product_from_json "$i")"
+        echo "$((i+1)). $name"
+    done
+    
+    echo "--------------------------------"
+    echo "0. Select all products"
+    echo "--------------------------------"
+    
+    while true; do
+        read -p "Enter product numbers (separated by spaces, or 0 for all): " -r selections
+        
+        # Validate input
+        if [[ "$selections" == "0" ]]; then
+            # Select all products
+            for ((i=0; i<product_count; i++)); do
+                selected_products+=("$i")
+            done
+            break
+        fi
+        
+        # Parse individual selections
+        local valid_selections=true
+        for selection in $selections; do
+            if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le "$product_count" ]; then
+                selected_products+=("$((selection-1))")
+            else
+                echo "Invalid selection: $selection. Please enter valid numbers."
+                valid_selections=false
+                break
+            fi
+        done
+        
+        if [ "$valid_selections" = true ]; then
+            # Remove duplicates
+            IFS=$'\n' sorted=($(sort -u <<<"${selected_products[*]}"))
+            unset IFS
+            selected_products=("${sorted[@]}")
+            
+            # Show selected products
+            echo "Selected products:"
+            for index in "${selected_products[@]}"; do
+                IFS='|' read -r name code <<< "$(parse_product_from_json "$index")"
+                echo "  - $name"
+            done
+            
+            read -p "Is this correct? (y/n): " -r confirm
+            if [[ "$confirm" =~ ^[yY]$ ]]; then
+                break
+            else
+                selected_products=()
+            fi
+        fi
+    done
+    
+    echo "${selected_products[@]}"
 }
 
 # ============ Logging Functions =============
@@ -534,6 +613,34 @@ EOF
     debug "Generate vm: $file"
 }
 
+# ============ Clipboard Functions =============
+# NEW FEATURE: Copy activation codes to clipboard instead of opening browser
+copy_to_clipboard() {
+    local text="$1"
+    
+    case "$OS" in
+        "macOS")
+            # Use pbcopy which is available by default on macOS
+            echo -n "$text" | pbcopy
+            ;;
+        "Linux")
+            # Try different clipboard tools - xclip is preferred, xsel as fallback
+            if command -v xclip &>/dev/null; then
+                echo -n "$text" | xclip -selection clipboard
+            elif command -v xsel &>/dev/null; then
+                echo -n "$text" | xsel --clipboard --input
+            else
+                return 1
+            fi
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+    
+    return $?
+}
+
 # ============ Generate Activation Code =============
 generate_license() {
     local obj_product_name="$1"
@@ -552,6 +659,16 @@ generate_license() {
 
     if [ $? -eq 0 ]; then
         success "${dir_product_name} activation successful!"
+        
+        # Read the generated license and copy to clipboard
+        if [ -f "$file_license" ]; then
+            local license_content=$(cat "$file_license")
+            if copy_to_clipboard "$license_content"; then
+                info "Activation code copied to clipboard for ${dir_product_name}"
+            else
+                warning "Failed to copy activation code to clipboard for ${dir_product_name}"
+            fi
+        fi
     else
         warning "${dir_product_name} requires manual license key input!"
     fi
@@ -640,6 +757,23 @@ main() {
 
     read_license_info
 
+    # Get product selection from user - NEW FEATURE
+    read -p "Do you want to activate all products or select specific ones? (all/select): " -r choice
+    if [[ "$choice" =~ ^[sS]$ ]]; then
+        selected_products=($(show_product_menu))
+        if [ ${#selected_products[@]} -eq 0 ]; then
+            error "No products selected. Exiting."
+            exit 1
+        fi
+    else
+        # Select all products
+        local product_count=$(echo "$PRODUCTS" | jq length)
+        selected_products=()
+        for ((i=0; i<product_count; i++)); do
+            selected_products+=("$i")
+        done
+    fi
+
     info "Processing, please wait patiently..."
 
     check_and_install_deps
@@ -657,13 +791,38 @@ main() {
 
     do_download_resources
 
-    for dir in "${dir_cache_jb}"/*; do
-        [ -d "$dir" ] && handle_jetbrains_dir "$dir"
+    # Process selected products
+    local activated_products=()
+    for product_index in "${selected_products[@]}"; do
+        IFS='|' read -r product_name product_code <<< "$(parse_product_from_json "$product_index")"
+        
+        # Find and process the JetBrains directory for this product
+        for dir in "${dir_cache_jb}"/*; do
+            [ -d "$dir" ] || continue
+            
+            local dir_product_name=$(basename "$dir")
+            local lowercase_dir=$(echo "${dir_product_name}" | tr '[:upper:]' '[:lower:]')
+            
+            if [[ "$lowercase_dir" == *"$product_name"* ]]; then
+                handle_jetbrains_dir "$dir"
+                activated_products+=("$dir_product_name")
+                break
+            fi
+        done
     done
 
-    info "All items processing completed, if you need activation codes, please visit the website to get them!"
-    sleep 1
-    $OPEN_CMD "$URL_BASE" &>/dev/null
+    if [ ${#activated_products[@]} -gt 0 ]; then
+        info "Activation completed for the following products:"
+        for product in "${activated_products[@]}"; do
+            info "  - $product"
+        done
+        info "Activation codes have been copied to clipboard for each product."
+    else
+        warning "No products were activated. Please check if JetBrains products are installed."
+    fi
+
+    # MODIFIED: Don't open browser anymore - codes are copied to clipboard
+    info "Activation process completed successfully!"
 }
 
 main "$@"
