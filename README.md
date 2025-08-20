@@ -22,8 +22,6 @@
 
 ---
 
-## 🎨 ASCII Art Logo
-
 ```ascii
 JJJJJJ   EEEEEEE   TTTTTTTT  BBBBBBB    RRRRRR    AAAAAA    IIIIIIII  NNNN   NN   SSSSSS
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NNNNN  NN  SS
