@@ -2,8 +2,6 @@
 
 # 🚀 ToolBox Activator
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/neKamita/toolbox-activator?style=for-the-badge&color=blue)
-![GitHub](https://img.shields.io/github/license/neKamita/toolbox-activator?style=for-the-badge&color=green)
 ![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge&color=red)
 ![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge&color=orange)
 ![GitHub stars](https://img.shields.io/github/stars/neKamita/toolbox-activator?style=for-the-badge&color=yellow)
@@ -11,11 +9,6 @@
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
 ![Language](https://img.shields.io/badge/Language-Bash%20%7C%20PowerShell-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
-
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/releases)
-[![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/issues)
-[![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/network)
-[![GitHub stars](https://img.shields.io/github/stars/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/stargazers)
 
 ---
 
@@ -63,21 +56,21 @@ ToolBox Activator — это мощный и удобный инструмент
 
 ## 💻 Поддерживаемые IDE
 
-| IDE | Эмодзи | Поддержка | Статус |
-|-----|--------|-----------|--------|
-| 🎨 **IntelliJ IDEA** | 🧠 | Ultimate & Community | ✅ Полная |
-| ⚙️ **CLion** | 🔧 | C/C++ IDE | ✅ Полная |
-| 🐘 **PhpStorm** | 🐘 | PHP IDE | ✅ Полная |
-| 🎯 **GoLand** | 🎯 | Go IDE | ✅ Полная |
-| 🐍 **PyCharm** | 🐍 | Python IDE | ✅ Полная |
-| 🌐 **WebStorm** | 🌐 | Web Frontend IDE | ✅ Полная |
-| 🎮 **Rider** | 🎮 | .NET IDE | ✅ Полная |
-| 🗄️ **DataGrip** | 🗄️ | SQL IDE | ✅ Полная |
-| 💎 **RubyMine** | 💎 | Ruby IDE | ✅ Полная |
-| 🍎 **AppCode** | 🍎 | iOS/macOS IDE | ✅ Полная |
-| 🔮 **DataSpell** | 🔮 | Data Science IDE | ✅ Полная |
-| 🔍 **dotMemory** | 🔍 | Memory Profiler | ✅ Полная |
-| 🦀 **RustRover** | 🦀 | Rust IDE | ✅ Полная |
+| IDE                  | Эмодзи | Поддержка            | Статус    |
+| -------------------- | ------ | -------------------- | --------- |
+| 🎨 **IntelliJ IDEA** | 🧠     | Ultimate & Community | ✅ Полная |
+| ⚙️ **CLion**         | 🔧     | C/C++ IDE            | ✅ Полная |
+| 🐘 **PhpStorm**      | 🐘     | PHP IDE              | ✅ Полная |
+| 🎯 **GoLand**        | 🎯     | Go IDE               | ✅ Полная |
+| 🐍 **PyCharm**       | 🐍     | Python IDE           | ✅ Полная |
+| 🌐 **WebStorm**      | 🌐     | Web Frontend IDE     | ✅ Полная |
+| 🎮 **Rider**         | 🎮     | .NET IDE             | ✅ Полная |
+| 🗄️ **DataGrip**      | 🗄️     | SQL IDE              | ✅ Полная |
+| 💎 **RubyMine**      | 💎     | Ruby IDE             | ✅ Полная |
+| 🍎 **AppCode**       | 🍎     | iOS/macOS IDE        | ✅ Полная |
+| 🔮 **DataSpell**     | 🔮     | Data Science IDE     | ✅ Полная |
+| 🔍 **dotMemory**     | 🔍     | Memory Profiler      | ✅ Полная |
+| 🦀 **RustRover**     | 🦀     | Rust IDE             | ✅ Полная |
 
 ---
 
@@ -157,13 +150,13 @@ graph LR
         C[Менеджер загрузок] --> D[Конфигуратор .vmoptions]
         E[Генератор лицензий] --> F[Обработчик IDE]
     end
-    
+
     subgraph "Рабочие директории"
         G[~/.jb_run/config] --> H[Конфигурация ja-netfilter]
         I[~/.jb_run/plugins] --> J[Плагины ja-netfilter]
         K[~/.jb_run/backups] --> L[Резервные копии]
     end
-    
+
     subgraph "JetBrains IDE"
         M[Обнаруженные продукты] --> N[Настройка .vmoptions]
         N --> O[Генерация лицензий]
@@ -181,7 +174,7 @@ sequenceDiagram
     participant I as Установка IDE
     participant V as .vmoptions файлы
     participant L as Генератор лицензий
-    
+
     S->>D: Поиск директорий продуктов
     D->>H: Чтение пути установки
     H->>I: Проверка существования
@@ -194,16 +187,16 @@ sequenceDiagram
 
 ## 🖥️ Поддерживаемые платформы
 
-| Платформа | Версия | Поддержка | Особенности |
-|-----------|--------|-----------|-------------|
-| 🪟 **Windows** | 10/11 | ✅ Полная | PowerShell 5.1+ |
-| 🪟 **Windows** | 8.1 | ✅ Частичная | PowerShell 5.0 |
-| 🍎 **macOS** | Big Sur+ | ✅ Полная | Apple Silicon/Intel |
-| 🍎 **macOS** | Catalina | ✅ Полная | Intel процессоры |
-| 🐧 **Linux** | Ubuntu 20.04+ | ✅ Полная | apt/dnf/yum/pacman |
-| 🐧 **Linux** | Debian 11+ | ✅ Полная | apt пакетный менеджер |
-| 🐧 **Linux** | Fedora 35+ | ✅ Полная | dnf/yum |
-| 🐧 **Linux** | Arch Linux | ✅ Полная | pacman |
+| Платформа      | Версия        | Поддержка    | Особенности           |
+| -------------- | ------------- | ------------ | --------------------- |
+| 🪟 **Windows** | 10/11         | ✅ Полная    | PowerShell 5.1+       |
+| 🪟 **Windows** | 8.1           | ✅ Частичная | PowerShell 5.0        |
+| 🍎 **macOS**   | Big Sur+      | ✅ Полная    | Apple Silicon/Intel   |
+| 🍎 **macOS**   | Catalina      | ✅ Полная    | Intel процессоры      |
+| 🐧 **Linux**   | Ubuntu 20.04+ | ✅ Полная    | apt/dnf/yum/pacman    |
+| 🐧 **Linux**   | Debian 11+    | ✅ Полная    | apt пакетный менеджер |
+| 🐧 **Linux**   | Fedora 35+    | ✅ Полная    | dnf/yum               |
+| 🐧 **Linux**   | Arch Linux    | ✅ Полная    | pacman                |
 
 ---
 
@@ -226,6 +219,7 @@ sequenceDiagram
 **Проблема**: Нет прав на исполнение или политика выполнения
 
 **Решение**:
+
 ```bash
 # Linux/macOS
 chmod +x activate.sh
@@ -239,6 +233,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 **Проблема**: IDE не установлены или не обнаружены
 
 **Решение**:
+
 - Убедитесь, что JetBrains IDE установлены
 - Проверьте пути в `~/.config/JetBrains` (Linux/macOS) или `%APPDATA%\JetBrains` (Windows)
 - Запустите IDE хотя бы один раз для создания конфигурации
@@ -248,6 +243,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 **Проблема**: Проблемы с сетью или недоступность сервера
 
 **Решение**:
+
 - Проверьте интернет-соединение
 - Попробуйте запустить скрипт позже
 - Проверьте доступность `https://ckey.run`
@@ -257,6 +253,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 **Проблема**: Некорректные ключи или блокировка сервера
 
 **Решение**:
+
 - Убедитесь, что скопировали ключи полностью
 - Проверьте формат активации в JetBrains IDE
 - Попробуйте создать новую лицензию с другими параметрами
@@ -266,6 +263,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 **Проблема**: Проблемы с правами доступа или существующими настройками
 
 **Решение**:
+
 - Запустите скрипт от имени администратора
 - Проверьте права доступа к файлам .vmoptions
 - Скрипт автоматически создаст резервные копии
@@ -316,6 +314,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 ### 🐛 Сообщить об ошибке
 
 Если вы нашли ошибку, пожалуйста:
+
 1. Проверьте [существующие issues](https://github.com/neKamita/toolbox-activator/issues)
 2. Создайте новый issue с подробным описанием
 3. Укажите вашу ОС, версию скрипта и шаги воспроизведения
