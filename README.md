@@ -3,7 +3,8 @@
 # 🚀 ToolBox Activator
 
 ## 🌐 Language / Язык
-[🇷 **Русский**](#-toolBox-activator-1) | [🇺🇸 **English**](#-toolBox-activator-2)
+
+[🇷 **Русский**](#-toolBox-activator-русский) | [🇺🇸 **English**](#-toolBox-activator-english)
 
 ![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge&color=red)
 ![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge&color=orange)
@@ -17,7 +18,7 @@
 
 ---
 
-# 🇷 ToolBox Activator (Русский)
+# ToolBox Activator (Русский)
 
 ### 🎯 Универсальный активатор для всех JetBrains IDE
 
@@ -387,21 +388,21 @@ ToolBox Activator is a powerful and convenient tool for automatically activating
 
 ## 💻 Supported IDEs
 
-| IDE                  | Support               | Status    |
-| -------------------- | --------------------- | --------- |
-| 🎨 **IntelliJ IDEA** | Ultimate & Community  | ✅ Full   |
-| ⚙️ **CLion**         | C/C++ IDE             | ✅ Full   |
-| 🐘 **PhpStorm**      | PHP IDE               | ✅ Full   |
-| 🎯 **GoLand**        | Go IDE                | ✅ Full   |
-| 🐍 **PyCharm**       | Python IDE            | ✅ Full   |
-| 🌐 **WebStorm**      | Web Frontend IDE      | ✅ Full   |
-| 🎮 **Rider**         | .NET IDE              | ✅ Full   |
-| 🗄️ **DataGrip**      | SQL IDE               | ✅ Full   |
-| 💎 **RubyMine**      | Ruby IDE              | ✅ Full   |
-| 🍎 **AppCode**       | iOS/macOS IDE         | ✅ Full   |
-| 🔮 **DataSpell**     | Data Science IDE      | ✅ Full   |
-| 🔍 **dotMemory**     | Memory Profiler       | ✅ Full   |
-| 🦀 **RustRover**     | Rust IDE              | ✅ Full   |
+| IDE                  | Support              | Status  |
+| -------------------- | -------------------- | ------- |
+| 🎨 **IntelliJ IDEA** | Ultimate & Community | ✅ Full |
+| ⚙️ **CLion**         | C/C++ IDE            | ✅ Full |
+| 🐘 **PhpStorm**      | PHP IDE              | ✅ Full |
+| 🎯 **GoLand**        | Go IDE               | ✅ Full |
+| 🐍 **PyCharm**       | Python IDE           | ✅ Full |
+| 🌐 **WebStorm**      | Web Frontend IDE     | ✅ Full |
+| 🎮 **Rider**         | .NET IDE             | ✅ Full |
+| 🗄️ **DataGrip**      | SQL IDE              | ✅ Full |
+| 💎 **RubyMine**      | Ruby IDE             | ✅ Full |
+| 🍎 **AppCode**       | iOS/macOS IDE        | ✅ Full |
+| 🔮 **DataSpell**     | Data Science IDE     | ✅ Full |
+| 🔍 **dotMemory**     | Memory Profiler      | ✅ Full |
+| 🦀 **RustRover**     | Rust IDE             | ✅ Full |
 
 ---
 
@@ -518,16 +519,16 @@ sequenceDiagram
 
 ## 🖥️ Supported Platforms
 
-| Platform      | Version       | Support       | Features              |
-| ------------- | ------------- | ------------- | --------------------- |
-| 🪟 **Windows** | 10/11         | ✅ Full       | PowerShell 5.1+       |
-| 🪟 **Windows** | 8.1           | ✅ Partial    | PowerShell 5.0        |
-| 🍎 **macOS**   | Big Sur+      | ✅ Full       | Apple Silicon/Intel   |
-| 🍎 **macOS**   | Catalina      | ✅ Full       | Intel Processors      |
-| 🐧 **Linux**   | Ubuntu 20.04+ | ✅ Full       | apt/dnf/yum/pacman    |
-| 🐧 **Linux**   | Debian 11+    | ✅ Full       | apt Package Manager   |
-| 🐧 **Linux**   | Fedora 35+    | ✅ Full       | dnf/yum               |
-| 🐧 **Linux**   | Arch Linux    | ✅ Full       | pacman                |
+| Platform       | Version       | Support    | Features            |
+| -------------- | ------------- | ---------- | ------------------- |
+| 🪟 **Windows** | 10/11         | ✅ Full    | PowerShell 5.1+     |
+| 🪟 **Windows** | 8.1           | ✅ Partial | PowerShell 5.0      |
+| 🍎 **macOS**   | Big Sur+      | ✅ Full    | Apple Silicon/Intel |
+| 🍎 **macOS**   | Catalina      | ✅ Full    | Intel Processors    |
+| 🐧 **Linux**   | Ubuntu 20.04+ | ✅ Full    | apt/dnf/yum/pacman  |
+| 🐧 **Linux**   | Debian 11+    | ✅ Full    | apt Package Manager |
+| 🐧 **Linux**   | Fedora 35+    | ✅ Full    | dnf/yum             |
+| 🐧 **Linux**   | Arch Linux    | ✅ Full    | pacman              |
 
 ---
 
