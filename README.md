@@ -141,7 +141,14 @@ chmod +x activate.sh
 
 ---
 
+### 🎬 Дополнительные видео материалы
 
+<div align="center">
+<a href="https://www.youtube.com/results?search_query=jetbrains+ide+activation" target="_blank">
+  <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="YouTube видео по активации JetBrains" width="60%">
+</a>
+<p><strong>🎥 Посмотрите дополнительные видео по активации JetBrains IDE</strong></p>
+</div>
 
 </div>
 
