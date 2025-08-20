@@ -1,134 +1,321 @@
-# JetBrains Activation Tool
+<div align="center">
 
-A comprehensive activation tool for JetBrains IDEs using ja-netfilter. This tool automates the process of activating all JetBrains products including IntelliJ IDEA, PyCharm, WebStorm, GoLand, and many others.
+# 🚀 JetBrains Activation Tool
 
-## 🚀 Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-blue)](https://github.com/neKamita/ToolBox-Activator)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
+[![Bash](https://img.shields.io/badge/Bash-4.0+-green.svg)](https://www.gnu.org/software/bash/)
 
-- **Multi-platform Support**: Works on Linux, macOS, and Windows
-- **Automatic Detection**: Detects all installed JetBrains products automatically
-- **Dependency Management**: Automatically installs required dependencies (curl, jq)
-- **License Generation**: Generates activation codes for all supported products
-- **Environment Cleanup**: Removes conflicting environment variables from other activation tools
-- **Progress Tracking**: Real-time progress bars and colored output
+> ✨ **Автоматический инструмент активации** для всех IDE от JetBrains с использованием ja-netfilter
 
-## 📋 Supported Products
+**Надежная активация • Мультиплатформенная поддержка • Простота использования**
 
-- IntelliJ IDEA
-- CLion
-- PhpStorm
-- GoLand
-- PyCharm
-- WebStorm
-- Rider
-- DataGrip
-- RubyMine
-- AppCode
-- DataSpell
-- DotMemory
-- RustRover
+[📖 Документация](#-документация) • [🚀 Быстрый старт](#-быстрый-старт) • [🔧 Установка](#-установка) • [🆘 Поддержка](#-поддержка)
 
-## 🔧 System Requirements
+</div>
 
-### Linux/macOS
-- Bash shell
-- curl
-- jq
-- Java (for JetBrains IDEs)
-- Internet connection
+---
 
-### Windows
-- Windows 10 or later
-- PowerShell 5.1 or later
-- Internet connection
-- Administrator privileges (for dependency installation)
+## 📋 О проекте
 
-## 📦 Installation
+Инструмент автоматической активации для всех IDE от JetBrains, включая IntelliJ IDEA, PyCharm, WebStorm, GoLand и многие другие. Использует современные технологии ja-netfilter для надежной и безопасной активации.
 
-1. **Clone or download** the repository
-2. **Choose the appropriate script** for your operating system:
-   - Linux/macOS: `activate.sh`
-   - Windows: `activate.ps1`
+### 🌟 Ключевые возможности
 
-## 🚀 Usage
+| Функция | Описание |
+|---------|----------|
+| 🎯 **Автообнаружение** | Автоматически находит все установленные продукты JetBrains |
+| 🔄 **Мультиплатформа** | Поддержка Linux, macOS и Windows |
+| 📦 **Управление зависимостями** | Автоматическая установка curl, jq и других компонентов |
+| 🎫 **Генерация лицензий** | Создание ключей активации для всех поддерживаемых продуктов |
+| 🧹 **Очистка среды** | Удаление конфликтующих переменных окружения |
+| 📊 **Отслеживание прогресса** | Цветной вывод и индикаторы выполнения |
 
-### For Linux/macOS
+### 🎯 Поддерживаемые продукты
 
-1. **Open Terminal** and navigate to the script directory
-2. **Make the script executable** (if needed):
+| IDE | Иконка | Статус |
+|-----|--------|---------|
+| IntelliJ IDEA | 🧠 | ✅ Поддерживается |
+| CLion | ⚙️ | ✅ Поддерживается |
+| PhpStorm | 🐘 | ✅ Поддерживается |
+| GoLand | 🐹 | ✅ Поддерживается |
+| PyCharm | 🐍 | ✅ Поддерживается |
+| WebStorm | 🌐 | ✅ Поддерживается |
+| Rider | 🐴 | ✅ Поддерживается |
+| DataGrip | 🗄️ | ✅ Поддерживается |
+| RubyMine | 💎 | ✅ Поддерживается |
+| AppCode | 🍎 | ✅ Поддерживается |
+| DataSpell | 📊 | ✅ Поддерживается |
+| DotMemory | 🔍 | ✅ Поддерживается |
+| RustRover | 🦀 | ✅ Поддерживается |
+
+---
+
+## 🏗️ Архитектура системы
+
+```mermaid
+graph TB
+    A[🚀 Запуск скрипта] --> B{Определение платформы}
+    B -->|Linux/macOS| C[./activate.sh]
+    B -->|Windows| D[.\activate.ps1]
+
+    C --> E[Проверка зависимостей]
+    D --> E[Проверка зависимостей]
+
+    E --> F[Установка curl/jq]
+    F --> G[Создание рабочих директорий]
+
+    G --> H[🧹 Очистка переменных окружения]
+    H --> I[📦 Загрузка ja-netfilter]
+
+    I --> J[🔧 Настройка .vmoptions]
+    J --> K[🎫 Генерация лицензий]
+
+    K --> L[✅ Активация всех IDE]
+    L --> M[📊 Отчет о выполнении]
+
+    style A fill:#4CAF50,color:white
+    style M fill:#2196F3,color:white
+```
+
+### 📊 Процесс выполнения скрипта
+
+```mermaid
+flowchart TD
+    Start([🚀 Старт]) --> Detect[🎯 Определение ОС]
+    Detect --> CheckDeps[🔍 Проверка зависимостей]
+
+    CheckDeps -->|Отсутствуют| InstallDeps[📦 Установка зависимостей]
+    CheckDeps -->|Присутствуют| CreateDirs[📁 Создание директорий]
+
+    InstallDeps --> CreateDirs
+    CreateDirs --> CleanEnv[🧹 Очистка переменных]
+
+    CleanEnv --> Download[⬇️ Загрузка ресурсов]
+    Download --> ConfigVM[⚙️ Настройка VM Options]
+
+    ConfigVM --> GenLic[🎫 Генерация лицензий]
+    GenLic --> Activate[✅ Активация продуктов]
+
+    Activate --> Report[📋 Отчет]
+    Report --> End([🎉 Готово!])
+
+    style Start fill:#4CAF50,color:white
+    style End fill:#2196F3,color:white
+    style InstallDeps fill:#FF9800,color:white
+    style Activate fill:#9C27B0,color:white
+```
+
+---
+
+## 🎯 Быстрый старт
+
+<div align="center">
+
+### Linux/macOS 🐧🍎
+```bash
+# 1. Скачайте репозиторий
+git clone https://github.com/neKamita/ToolBox-Activator.git
+cd ToolBox-Activator
+
+# 2. Сделайте скрипт исполняемым
+chmod +x activate.sh
+
+# 3. Запустите активацию
+./activate.sh
+```
+
+### Windows 🖥️
+```powershell
+# 1. Скачайте репозиторий
+git clone https://github.com/neKamita/ToolBox-Activator.git
+cd ToolBox-Activator
+
+# 2. Запустите PowerShell от имени администратора
+# 3. Выполните активацию
+.\activate.ps1
+```
+
+</div>
+
+---
+
+## 🔧 Системные требования
+
+<div align="center">
+
+| Платформа | Требования | Статус |
+|-----------|------------|---------|
+| **🐧 Linux** | Bash 4.0+, curl, jq, Java | ✅ Полная поддержка |
+| **🍎 macOS** | Bash 4.0+, curl, jq, Java | ✅ Полная поддержка |
+| **🖥️ Windows** | PowerShell 5.1+, .NET Framework | ✅ Полная поддержка |
+
+</div>
+
+### 📋 Детальные требования
+
+<details>
+<summary><strong>🔍 Развернуть требования</strong></summary>
+
+#### Linux/macOS 🐧🍎
+- **Shell**: Bash 4.0 или выше
+- **Инструменты**: curl, jq
+- **Java**: JDK 8+ (для JetBrains IDE)
+- **Сеть**: Интернет-соединение
+- **Права**: Доступ на запись в домашнюю директорию
+
+#### Windows 🖥️
+- **ОС**: Windows 10 или выше
+- **PowerShell**: 5.1 или выше
+- **Права**: Администратор (для установки зависимостей)
+- **Сеть**: Интернет-соединение
+- **Брандмауэр**: Разрешение доступа к внешним ресурсам
+
+</details>
+
+---
+
+## 📦 Установка
+
+<div align="center">
+
+| Шаг | Действие | Описание |
+|-----|----------|----------|
+| 1 | 📥 Скачать | Клонируйте или загрузите репозиторий |
+| 2 | 📂 Выбрать скрипт | `activate.sh` для Linux/macOS или `activate.ps1` для Windows |
+| 3 | ⚙️ Подготовить | Сделайте скрипт исполняемым (Linux/macOS) или запустите PowerShell как администратор (Windows) |
+| 4 | 🚀 Запустить | Выполните скрипт и следуйте инструкциям |
+
+</div>
+
+### 📋 Детальная установка
+
+#### Linux/macOS 🐧🍎
+1. **📥 Скачайте репозиторий**
+   ```bash
+   git clone https://github.com/neKamita/ToolBox-Activator.git
+   cd ToolBox-Activator
+   ```
+
+2. **📂 Подготовьте скрипт**
    ```bash
    chmod +x activate.sh
    ```
-3. **Run the script**:
+
+3. **🚀 Запустите активацию**
    ```bash
    ./activate.sh
    ```
-4. **Follow the on-screen instructions**:
-   - Enter custom license name (or press Enter for default "ckey.run")
-   - Enter custom expiry date (or press Enter for default "2099-12-31")
-   - Press Enter to continue when prompted
 
-### For Windows
-
-1. **Open PowerShell as Administrator**
-2. **Navigate to the script directory**:
+#### Windows 🖥️
+1. **📥 Скачайте репозиторий**
    ```powershell
-   cd "C:\Path\To\Script\Directory"
+   git clone https://github.com/neKamita/ToolBox-Activator.git
+   cd ToolBox-Activator
    ```
-3. **Run the script**:
+
+2. **📂 Откройте PowerShell от имени администратора**
+   - Найдите PowerShell в меню Пуск
+   - Щелкните правой кнопкой → "Запуск от имени администратора"
+
+3. **🚀 Выполните активацию**
    ```powershell
    .\activate.ps1
    ```
-4. **Follow the on-screen instructions**:
-   - Enter custom license name (or press Enter for default "ckey.run")
-   - Enter custom expiry date (or press Enter for default "2099-12-31")
-   - Press Enter to continue when prompted
 
-## ⚙️ How It Works
+---
 
-1. **Platform Detection**: Automatically detects your operating system
-2. **Dependency Check**: Verifies and installs required tools (curl, jq)
-3. **Environment Cleanup**: Removes conflicting environment variables
-4. **Resource Download**: Downloads ja-netfilter JAR files and configuration
-5. **VM Options Configuration**: Updates .vmoptions files for all JetBrains products
-6. **License Generation**: Creates activation codes for each product
-7. **Activation**: Applies the activation to all detected products
+## ⚙️ Как это работает
 
-## 🔍 Script Process
+### 🔄 Процесс выполнения
 
-The script will:
-- ✅ Check for required dependencies and install if missing
-- ✅ Create working directories in `~/.jb_run` (Linux/macOS) or `%USERPROFILE%\.jb_run` (Windows)
-- ✅ Download necessary JAR files and configuration files
-- ✅ Clean up existing environment variables
-- ✅ Configure .vmoptions files for all installed JetBrains products
-- ✅ Generate license keys for each product
-- ✅ Display license keys for manual activation if needed
+```mermaid
+timeline
+    title Процесс активации JetBrains IDE
+    section Подготовка
+      Определение платформы : 🎯 Автоматически
+      Проверка зависимостей : 🔍 curl, jq, Java
+      Установка компонентов : 📦 Автоматически
+    section Настройка
+      Очистка переменных : 🧹 Удаление конфликтов
+      Загрузка ja-netfilter : ⬇️ JAR файлы
+      Настройка VM Options : ⚙️ Для всех IDE
+    section Активация
+      Генерация лицензий : 🎫 Ключи активации
+      Применение к IDE : ✅ Все продукты
+      Проверка работоспособности : 🧪 Тестирование
+```
 
-## 🎯 Important Notes
+### 📋 Этапы работы скрипта
 
-- **Close all JetBrains IDEs** before running the script
-- **Administrator privileges may be required** on Windows
-- **Internet connection is required** for downloading resources and generating licenses
-- **The script will activate ALL detected products** regardless of previous activation status
-- **License keys are displayed in the terminal** - copy them for manual activation if needed
+<div align="center">
 
-## 🔧 Configuration
+| Этап | Действие | Описание |
+|------|----------|----------|
+| 1 | 🎯 **Определение платформы** | Автоматическое обнаружение ОС |
+| 2 | 🔍 **Проверка зависимостей** | Поиск curl, jq, Java |
+| 3 | 📦 **Установка компонентов** | Автоматическая установка недостающих инструментов |
+| 4 | 🧹 **Очистка среды** | Удаление конфликтующих переменных окружения |
+| 5 | ⬇️ **Загрузка ресурсов** | Скачивание JAR файлов ja-netfilter |
+| 6 | ⚙️ **Настройка VM Options** | Обновление файлов конфигурации для всех IDE |
+| 7 | 🎫 **Генерация лицензий** | Создание ключей активации |
+| 8 | ✅ **Применение активации** | Активация всех обнаруженных продуктов |
+| 9 | 📊 **Отчет** | Вывод результатов и ключей |
 
-### Custom URLs (Optional)
+</div>
 
-You can modify the base URLs in the script if needed:
+### 🎯 Что делает скрипт
 
+- ✅ **Проверяет зависимости** и устанавливает их при необходимости
+- ✅ **Создает рабочие директории** в `~/.jb_run` (Linux/macOS) или `%USERPROFILE%\.jb_run` (Windows)
+- ✅ **Загружает необходимые JAR файлы** и файлы конфигурации
+- ✅ **Очищает существующие переменные окружения**
+- ✅ **Настраивает .vmoptions файлы** для всех установленных продуктов JetBrains
+- ✅ **Генерирует лицензионные ключи** для каждого продукта
+- ✅ **Отображает лицензионные ключи** для ручной активации при необходимости
+
+---
+
+## ⚠️ Важные замечания
+
+> **⚠️ Перед запуском закройте все IDE от JetBrains!**
+
+<div align="center">
+
+| Правило | Описание | Иконка |
+|---------|----------|---------|
+| **Закрыть IDE** | Все JetBrains IDE должны быть закрыты | 🔒 |
+| **Права администратора** | Могут потребоваться на Windows | 🛡️ |
+| **Интернет** | Требуется для загрузки ресурсов | 🌐 |
+| **Все продукты** | Скрипт активирует ВСЕ обнаруженные продукты | 🔄 |
+| **Ключи в терминале** | Лицензионные ключи отображаются в консоли | 📋 |
+
+</div>
+
+---
+
+## 🔧 Конфигурация
+
+### 🎛️ Пользовательские URL (Опционально)
+
+Вы можете изменить базовые URL в скрипте при необходимости:
+
+**Linux/macOS:**
 ```bash
-# For Linux/macOS (activate.sh)
+# В activate.sh
 URL_BASE="https://your-custom-url.com"
+```
 
-# For Windows (activate.ps1)
+**Windows:**
+```powershell
+# В activate.ps1
 $URL_BASE = "https://your-custom-url.com"
 ```
 
-### Debug Mode
+### 🐛 Режим отладки
 
-Enable debug output by setting the DEBUG environment variable:
+Включите вывод отладочной информации установив переменную окружения DEBUG:
 
 **Linux/macOS:**
 ```bash
@@ -141,78 +328,240 @@ $env:DEBUG = "true"
 .\activate.ps1
 ```
 
-## 🛠️ Troubleshooting
+---
 
-### Common Issues
+## ️ Устранение неполадок
 
-1. **Permission Denied**
-   - **Linux/macOS**: Run with `sudo` or fix file permissions
-   - **Windows**: Run PowerShell as Administrator
+### 🔍 Дерево решений для проблем
 
-2. **Dependencies Not Found**
-   - The script will attempt to install missing dependencies automatically
-   - If installation fails, install manually:
-     - Ubuntu/Debian: `sudo apt install curl jq`
-     - CentOS/RHEL: `sudo yum install curl jq`
-     - macOS: Install Homebrew, then `brew install curl jq`
-     - Windows: Install via winget or Chocolatey
+```mermaid
+graph TD
+    A[🚨 Проблема возникла] --> B{Какой тип проблемы?}
 
-3. **Java Not Found**
-   - Ensure Java is installed and JAVA_HOME is set
-   - JetBrains IDEs require Java to run
+    B -->|Отказано в доступе| C[Права доступа]
+    B -->|Зависимости не найдены| D[Отсутствующие компоненты]
+    B -->|Java не найдена| E[Java не установлена]
+    B -->|Проблемы сети| F[Сетевые проблемы]
+    B -->|Активация не удалась| G[Сбой активации]
 
-4. **Network Issues**
-   - Check internet connection
-   - Verify firewall settings allow script access to required URLs
-   - Consider using a VPN if access is restricted
+    C --> H[Linux/macOS: sudo или chmod]
+    C --> I[Windows: PowerShell как администратор]
 
-5. **Activation Failed**
-   - Ensure all JetBrains IDEs are closed during activation
-   - Check if the product is properly installed
-   - Verify that .home files exist in the installation directories
+    D --> J[Автоматическая установка]
+    D --> K[Ручная установка по инструкции]
 
-### Manual Verification
+    E --> L[Установить JDK 8+]
+    E --> M[Настроить JAVA_HOME]
 
-To verify the installation:
+    F --> N[Проверить интернет]
+    F --> O[Настройки брандмауэра]
+    F --> P[Использовать VPN]
+
+    G --> Q[Закрыть все IDE]
+    G --> R[Проверить установку]
+    G --> S[Проверить .home файлы]
+
+    H --> T[✅ Проблема решена]
+    I --> T
+    J --> T
+    K --> T
+    L --> T
+    M --> T
+    N --> T
+    O --> T
+    P --> T
+    Q --> T
+    R --> T
+    S --> T
+```
+
+### 🚨 Распространенные проблемы
+
+<div align="center">
+
+| Проблема | Симптомы | Решение | Иконка |
+|----------|----------|---------|---------|
+| **Отказано в доступе** | Permission denied | Linux/macOS: `sudo` или `chmod` | 🔒 |
+| | | Windows: PowerShell от имени администратора | 🛡️ |
+| **Зависимости не найдены** | curl/jq не установлены | Автоматическая установка | 📦 |
+| | | Ручная: `sudo apt install curl jq` | 🔧 |
+| **Java не найдена** | JAVA_HOME не настроен | Установить JDK 8+ и настроить переменные | ☕ |
+| **Проблемы сети** | Не удается скачать ресурсы | Проверить интернет и брандмауэр | 🌐 |
+| **Активация не удалась** | IDE не активированы | Закрыть IDE и проверить установку | ❌ |
+
+</div>
+
+<details>
+<summary><strong>🔧 Детальные инструкции по устранению</strong></summary>
+
+#### 🔒 Проблемы с правами доступа
 
 **Linux/macOS:**
 ```bash
-# Check if ja-netfilter is working
+# Вариант 1: Запуск с sudo
+sudo ./activate.sh
+
+# Вариант 2: Исправление прав
+chmod +x activate.sh
+./activate.sh
+```
+
+**Windows:**
+```powershell
+# Запуск PowerShell от имени администратора
+# Правый клик → "Запуск от имени администратора"
+.\activate.ps1
+```
+
+#### 📦 Отсутствующие зависимости
+
+**Автоматическая установка:**
+- Скрипт попытается установить зависимости автоматически
+
+**Ручная установка:**
+
+| Дистрибутив | Команда |
+|-------------|---------|
+| Ubuntu/Debian | `sudo apt install curl jq` |
+| CentOS/RHEL | `sudo yum install curl jq` |
+| macOS | `brew install curl jq` |
+| Windows | `winget install curl` и `winget install jq` |
+
+#### ☕ Проблемы с Java
+
+```bash
+# Проверить установку Java
+java -version
+
+# Проверить JAVA_HOME
+echo $JAVA_HOME
+
+# Установить Java (Ubuntu/Debian)
+sudo apt install openjdk-11-jdk
+
+# Настроить JAVA_HOME
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+```
+
+#### 🌐 Сетевые проблемы
+
+1. **Проверьте интернет-соединение:**
+   ```bash
+   ping google.com
+   ```
+
+2. **Проверьте доступ к URL:**
+   ```bash
+   curl -I https://codekey.run
+   ```
+
+3. **Настройки брандмауэра:**
+   - Разрешите доступ к внешним ресурсам
+   - Добавьте скрипт в исключения антивируса
+
+</details>
+
+### ✅ Проверка установки
+
+**Linux/macOS:**
+```bash
+# Проверить работу ja-netfilter
 find ~/.jb_run -name "*.jar" -type f
 
-# Check .vmoptions files
+# Проверить .vmoptions файлы
 find ~/.config/JetBrains -name "*.vmoptions" -exec grep -l "ja-netfilter" {} \;
 ```
 
 **Windows:**
 ```powershell
-# Check if ja-netfilter is working
+# Проверить работу ja-netfilter
 Get-ChildItem -Path "$env:USERPROFILE\.jb_run" -Filter "*.jar" -Recurse
 
-# Check .vmoptions files
+# Проверить .vmoptions файлы
 Get-ChildItem -Path "$env:APPDATA\JetBrains" -Filter "*.vmoptions" -Recurse | Get-Content | Select-String "ja-netfilter"
 ```
 
-## 📝 License Information
+---
 
-- This tool is provided for educational and testing purposes
-- Users are responsible for complying with JetBrains software license agreements
-- The tool uses ja-netfilter, an open-source project for Java agent-based activation
+## 📝 Лицензионная информация
 
-## 🤝 Contributing
+<div align="center">
 
-Feel free to submit issues and enhancement requests!
+| Аспект | Информация | Иконка |
+|--------|------------|---------|
+| **Назначение** | Для образовательных и тестовых целей | 🎓 |
+| **Ответственность** | Пользователи несут ответственность за соблюдение лицензионных соглашений JetBrains | ⚖️ |
+| **Технология** | Использует ja-netfilter - проект с открытым исходным кодом | 🔓 |
+| **Аффилированность** | Неофициальный инструмент, не связан с JetBrains | 🚫 |
 
-## 📄 Disclaimer
-
-This tool is not officially affiliated with JetBrains. Use at your own risk and ensure compliance with all applicable software license agreements.
-
-## 🔗 Links
-
-- [Original ja-netfilter Project](https://gitee.com/ja-netfilter/ja-netfilter)
-- [JetBrains Official Website](https://www.jetbrains.com/)
-- [CodeKey Run](https://ckey.run)
+</div>
 
 ---
 
-**Last Updated**: August 20, 2025
+## 🤝 Внесение вклада
+
+💡 **Мы приветствуем вклад в развитие проекта!**
+
+### 📋 Как внести вклад
+
+1. **🐛 Сообщайте об ошибках** через GitHub Issues
+2. **💡 Предлагайте улучшения** и новые функции
+3. **🔧 Создавайте Pull Requests** с исправлениями и улучшениями
+4. **📚 Помогайте с документацией** - улучшайте README и комментарии
+
+### 🌟 Благодарность контрибьюторам
+
+<div align="center">
+
+🙏 **Спасибо всем, кто помогает развивать проект!**
+
+</div>
+
+---
+
+## 📄 Отказ от ответственности
+
+<div align="center">
+
+⚠️ **ВАЖНОЕ ЗАМЕЧАНИЕ**
+
+</div>
+
+> **🚫 Этот инструмент не является официальным продуктом JetBrains**
+>
+> **⚖️ Используйте на свой страх и риск**
+>
+> **📋 Соблюдайте все применимые лицензионные соглашения программного обеспечения**
+
+---
+
+## 🔗 Полезные ссылки
+
+<div align="center">
+
+| Ресурс | Описание | Ссылка |
+|--------|----------|---------|
+| **🔧 ja-netfilter** | Оригинальный проект | [gitee.com/ja-netfilter](https://gitee.com/ja-netfilter/ja-netfilter) |
+| **🏢 JetBrains** | Официальный сайт | [jetbrains.com](https://www.jetbrains.com/) |
+| **🔑 CodeKey Run** | Сервис лицензирования | [ckey.run](https://ckey.run) |
+| **🐙 GitHub** | Репозиторий проекта | [github.com/neKamita/ToolBox-Activator](https://github.com/neKamita/ToolBox-Activator) |
+
+</div>
+
+---
+
+<div align="center">
+
+## 🎉 **Спасибо за использование JetBrains Activation Tool!**
+
+**⭐ Дайте звезду на GitHub если проект был полезен!**
+
+**📧 По вопросам и предложениям: [Создать Issue](https://github.com/neKamita/ToolBox-Activator/issues)**
+
+---
+
+**📅 Последнее обновление: 20 августа 2025 г.**
+
+*Создано с ❤️ для сообщества разработчиков*
+
+</div>
