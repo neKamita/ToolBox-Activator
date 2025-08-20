@@ -22,16 +22,7 @@
 
 ---
 
-<div id="ascii-animation" style="font-family: 'Courier New', monospace; text-align: center; margin: 20px 0; background: #000; color: #00ff00; padding: 20px; border-radius: 10px;">
-<pre id="ascii-content">
-<!-- ASCII арт будет динамически добавлен сюда -->
-</pre>
-</div>
-
-<script>
-// Анимированный ASCII-арт JETBRAINS JAILBREAK
-const frames = [
-    `
+```ascii
 JJJJJJ   EEEEEEE   TTTTTTTT  BBBBBBB    RRRRRR    AAAAAA    IIIIIIII  NNNN   NN   SSSSSS
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NNNNN  NN  SS
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN NNN NN   SS
@@ -39,56 +30,7 @@ JJJJJJ   EEEEEEE   TTTTTTTT  BBBBBBB    RRRRRR    AAAAAA    IIIIIIII  NNNN   NN 
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN   NNNN         SS
 JJ JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN    NNN          SS
  JJJJ    EEEEEEE      TT     BBBBBBB    RR   RR   AA  AA    IIIIIIII  NN    NNN    SSSSSS
-`,
-    `
-     JJJJJ    AAAAAA    IIIIIIII  LL        BBBBBBB    RRRRRR    EEEEEEE    AAAAAA    KK   KK
-       JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK  KK
-       JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK KK
-       JJ    AAAAAAAA      II     LL        BBBBBBB    RRRRRR    EEEEE     AAAAAAAA   KKKK
-       JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK KK
-   JJ  JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK  KK
-    JJJJ     AA    AA   IIIIIIII  LLLLLLL  BBBBBBB    RR   RR   EEEEEEE   AA    AA   KK   KK
-`,
-    `
-JJJJJJ   EEEEEEE   TTTTTTTT  BBBBBBB    RRRRRR    AAAAAA    IIIIIIII  NNNN   NN   SSSSSS
-   JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NNNNN  NN  SS
-   JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN NNN NN   SS
-   JJ    EEEEE        TT     BBBBBBB    RRRRRR    AAAAAA       II     NN  NNNNN    SSSSS
-   JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN   NNNN         SS
-JJ JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN    NNN          SS
- JJJJ    EEEEEEE      TT     BBBBBBB    RR   RR   AA  AA    IIIIIIII  NN    NNN    SSSSSS
-
-     JJJJJ    AAAAAA    IIIIIIII  LL        BBBBBBB    RRRRRR    EEEEEEE    AAAAAA    KK   KK
-       JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK  KK
-       JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK KK
-       JJ    AAAAAAAA      II     LL        BBBBBBB    RRRRRR    EEEEE     AAAAAAAA   KKKK
-       JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK KK
-   JJ  JJ    AA    AA      II     LL        BB    BB   RR   RR   EE        AA    AA   KK  KK
-    JJJJ     AA    AA   IIIIIIII  LLLLLLL  BBBBBBB    RR   RR   EEEEEEE   AA    AA   KK   KK
-`
-];
-
-let currentFrame = 0;
-const asciiContent = document.getElementById('ascii-content');
-const container = document.getElementById('ascii-animation');
-
-function animateASCII() {
-    // Добавляем эффект мерцания
-    container.style.opacity = '0.3';
-
-    setTimeout(() => {
-        asciiContent.textContent = frames[currentFrame];
-        container.style.opacity = '1';
-        currentFrame = (currentFrame + 1) % frames.length;
-    }, 100);
-}
-
-// Запускаем анимацию каждые 3 секунды
-setInterval(animateASCII, 3000);
-
-// Показываем первый кадр сразу
-asciiContent.textContent = frames[0];
-</script>
+```
 
 ## 📝 Описание
 
