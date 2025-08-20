@@ -542,6 +542,6 @@ Get-ChildItem -Path "$env:APPDATA\JetBrains" -Filter "*.vmoptions" -Recurse | Ge
 
 **📅 Последнее обновление: 20 августа 2025 г.**
 
-\Создано с ❤️ от neKamita
+Создано с ❤️ от neKamita
 
 </div>
