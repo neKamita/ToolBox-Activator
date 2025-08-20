@@ -2,20 +2,20 @@
 
 # 🚀 ToolBox Activator
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/your-username/toolbox-activator?style=for-the-badge&color=blue)
-![GitHub](https://img.shields.io/github/license/your-username/toolbox-activator?style=for-the-badge&color=green)
-![GitHub issues](https://img.shields.io/github/issues/your-username/toolbox-activator?style=for-the-badge&color=red)
-![GitHub forks](https://img.shields.io/github/forks/your-username/toolbox-activator?style=for-the-badge&color=orange)
-![GitHub stars](https://img.shields.io/github/stars/your-username/toolbox-activator?style=for-the-badge&color=yellow)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/neKamita/toolbox-activator?style=for-the-badge&color=blue)
+![GitHub](https://img.shields.io/github/license/neKamita/toolbox-activator?style=for-the-badge&color=green)
+![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge&color=red)
+![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge&color=orange)
+![GitHub stars](https://img.shields.io/github/stars/neKamita/toolbox-activator?style=for-the-badge&color=yellow)
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
 ![Language](https://img.shields.io/badge/Language-Bash%20%7C%20PowerShell-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/your-username/toolbox-activator?style=for-the-badge)](https://github.com/your-username/toolbox-activator/releases)
-[![GitHub issues](https://img.shields.io/github/issues/your-username/toolbox-activator?style=for-the-badge)](https://github.com/your-username/toolbox-activator/issues)
-[![GitHub forks](https://img.shields.io/github/forks/your-username/toolbox-activator?style=for-the-badge)](https://github.com/your-username/toolbox-activator/network)
-[![GitHub stars](https://img.shields.io/github/stars/your-username/toolbox-activator?style=for-the-badge)](https://github.com/your-username/toolbox-activator/stargazers)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/releases)
+[![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/issues)
+[![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/network)
+[![GitHub stars](https://img.shields.io/github/stars/neKamita/toolbox-activator?style=for-the-badge)](https://github.com/neKamita/toolbox-activator/stargazers)
 
 ---
 
@@ -96,7 +96,7 @@ ToolBox Activator — это мощный и удобный инструмент
 
 ```powershell
 # Скачайте и запустите скрипт
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/your-username/toolbox-activator/main/activate.ps1" -OutFile "activate.ps1"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/neKamita/toolbox-activator/main/activate.ps1" -OutFile "activate.ps1"
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 .\activate.ps1
 ```
@@ -105,7 +105,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ```bash
 # Скачайте и запустите скрипт
-curl -o activate.sh https://raw.githubusercontent.com/your-username/toolbox-activator/main/activate.sh
+curl -o activate.sh https://raw.githubusercontent.com/neKamita/toolbox-activator/main/activate.sh
 chmod +x activate.sh
 ./activate.sh
 ```
@@ -316,7 +316,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 ### 🐛 Сообщить об ошибке
 
 Если вы нашли ошибку, пожалуйста:
-1. Проверьте [существующие issues](https://github.com/your-username/toolbox-activator/issues)
+1. Проверьте [существующие issues](https://github.com/neKamita/toolbox-activator/issues)
 2. Создайте новый issue с подробным описанием
 3. Укажите вашу ОС, версию скрипта и шаги воспроизведения
 
@@ -326,8 +326,8 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 - 📧 Email: your-email@example.com
 - 💬 Telegram: [@your_username](https://t.me/your_username)
-- 🐛 Issues: [GitHub Issues](https://github.com/your-username/toolbox-activator/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/your-username/toolbox-activator/discussions)
+- 🐛 Issues: [GitHub Issues](https://github.com/neKamita/toolbox-activator/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/neKamita/toolbox-activator/discussions)
 
 ---
 
@@ -343,10 +343,10 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 **⭐ Если вам нравится проект, поставьте звезду!**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=your-username/toolbox-activator&type=Date)](https://star-history.com/#your-username/toolbox-activator&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=neKamita/toolbox-activator&type=Date)](https://star-history.com/#neKamita/toolbox-activator&Date)
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/your-username)
+Made with ❤️ by [Your Name](https://github.com/neKamita)
 
 </div>
