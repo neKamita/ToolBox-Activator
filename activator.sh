@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -e
 
-# ============ 平台检测 =============
+# ============ Platform Detection =============
 detect_platform() {
     case "$(uname -s)" in
         Darwin)
@@ -27,9 +27,9 @@ detect_platform() {
             ;;
     esac
 }
-# 自动检测平台
+# Auto detect platform
 detect_platform
-# ============ 配置 =============
+# ============ Configuration =============
 DEBUG=false
 ENABLE_COLOR=true
 
@@ -38,7 +38,7 @@ URL_BASE="https://ckey.run"
 URL_DOWNLOAD="${URL_BASE}/ja-netfilter"
 URL_LICENSE="${URL_BASE}/generateLicense/file"
 
-# 获取原始用户和家目录
+# Get original user and home directory
 if [ "$(id -u)" -eq 0 ] && [ -n "$SUDO_USER" ]; then
     ORIGINAL_USER="$SUDO_USER"
     USER_HOME="/home/${SUDO_USER}"
@@ -47,19 +47,19 @@ else
     USER_HOME="${HOME}"
 fi
 
-# macOS 用户路径修正
+# macOS user path correction
 if [[ "$OS" == "macOS" ]]; then
     USER_HOME="/Users/${ORIGINAL_USER}"
 fi
 
-# 工作路径
+# Working path
 dir_work="${USER_HOME}/.jb_run"
 dir_config="${dir_work}/config"
 dir_plugins="${dir_work}/plugins"
 dir_backups="${dir_work}/backups"
 file_netfilter_jar="${dir_work}/ja-netfilter.jar"
 
-# JetBrains 目录
+# JetBrains directory
 if [[ "$OS" == "macOS" ]]; then
     dir_cache_jb="${USER_HOME}/Library/Caches/JetBrains"
     dir_config_jb="${USER_HOME}/Library/Application Support/JetBrains"
@@ -68,7 +68,7 @@ else
     dir_config_jb="${USER_HOME}/.config/JetBrains"
 fi
 
-# 日志颜色设置
+# Log color settings
 if $ENABLE_COLOR; then
     RED='\033[0;31m'
     GREEN='\033[0;32m'
@@ -83,7 +83,7 @@ else
     NC=''
 fi
 
-# 产品列表
+# Product list
 PRODUCTS='[
     {"name":"idea","productCode":"II,PCWMP,PSI"},
     {"name":"clion","productCode":"CL,PSI,PCWMP"},
@@ -100,9 +100,9 @@ PRODUCTS='[
     {"name":"rustrover","productCode":"RR,PSI,PCWP"}
 ]'
 
-# ============ 工具函数 =============
+# ============ Utility Functions =============
 
-# ============ 日期验证 =============
+# ============ Date Validation =============
 check_and_install_deps() {
     local deps=("curl" "jq")
     local missing=()
@@ -114,24 +114,24 @@ check_and_install_deps() {
     done
 
     if [ ${#missing[@]} -eq 0 ]; then
-        info "所有依赖已安装。"
+        info "All dependencies are already installed."
         return
     fi
 
-    warning "缺少以下依赖：${missing[*]}，正在尝试自动安装..."
+    warning "Missing dependencies: ${missing[*]}, attempting to install automatically..."
 
-    # 先检测系统类型
+    # First detect system type
     case "$(uname -s)" in
         Darwin)
-          # 检测 Homebrew 是否存在
+          # Check if Homebrew exists
           if ! command -v brew &>/dev/null; then
-              warning "检测到 macOS但未安装 Homebrew"
-              read -p "是否要自动安装 Homebrew?(y/n) " install_brew
+              warning "macOS detected but Homebrew is not installed"
+              read -p "Do you want to install Homebrew automatically? (y/n) " install_brew
               if [[ "$install_brew" =~ [yY] ]]; then
-                  info "正在安装 Homebrew..."
+                  info "Installing Homebrew..."
                   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-                  # 自动配置环境变量
+                  # Auto configure environment variables
                   if [ -x "/opt/homebrew/bin/brew" ]; then  # Apple Silicon
                       echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
                       source ~/.zshrc
@@ -140,22 +140,22 @@ check_and_install_deps() {
                       source ~/.zshrc
                   fi
 
-                  # 再次验证
+                  # Verify again
                   if ! command -v brew &>/dev/null; then
-                      error "Homebrew 安装后仍不可用，请手动重启终端后重试"
+                      error "Homebrew is still not available after installation, please manually restart terminal and try again"
                       exit 1
                   fi
               else
-                  error "必须安装 Homebrew 才能继续!"
+                  error "Homebrew must be installed to continue!"
                   exit 1
               fi
           fi
 
-          # 安装依赖
+          # Install dependencies
           brew install "${missing[@]}"
           ;;
         Linux)
-            # Linux 系统 (原逻辑)
+            # Linux system (original logic)
             if command -v apt-get &>/dev/null; then
                 sudo apt update && sudo apt install -y "${missing[@]}"
             elif command -v dnf &>/dev/null; then
@@ -165,28 +165,28 @@ check_and_install_deps() {
             elif command -v pacman &>/dev/null; then
                 sudo pacman -Sy --noconfirm "${missing[@]}"
             else
-                error "无法识别的 Linux 发行版，请手动安装依赖：${missing[*]}"
+                error "Unrecognized Linux distribution, please manually install dependencies: ${missing[*]}"
                 exit 1
             fi
             ;;
         *)
-            error "不支持的操作系统"
+            error "Unsupported operating system"
             exit 1
             ;;
     esac
 
-    # 验证安装结果
+    # Verify installation results
     for dep in "${missing[@]}"; do
         if ! command -v "$dep" &>/dev/null; then
-            error "安装失败：$dep"
+            error "Installation failed: $dep"
             exit 1
         fi
     done
 
-    success "所有依赖已成功安装！"
+    success "All dependencies installed successfully!"
 }
 
-# ============ 解析产品 =============
+# ============ Parse Product =============
 parse_product_from_json() {
     local index="$1"
     local name=$(echo "$PRODUCTS" | jq -r ".[$index].name")
@@ -194,7 +194,7 @@ parse_product_from_json() {
     echo "$name|$code"
 }
 
-# ============ 日志函数 =============
+# ============ Logging Functions =============
 log() {
     local level="$1"
     local message="$2"
@@ -237,13 +237,13 @@ JJJJJJ   EEEEEEE   TTTTTTTT  BBBBBBB    RRRRRR    AAAAAA    IIIIIIII  NNNN   NN 
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN NNN NN   SS
    JJ    EEEEE        TT     BBBBBBB    RRRRRR    AAAAAA       II     NN  NNNNN    SSSSS
    JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN   NNNN         SS
-JJ JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN    NNN          SS
- JJJJ    EEEEEEE      TT     BBBBBBB    RR   RR   AA  AA    IIIIIIII  NN    NNN    SSSSSS
+ JJ JJ    EE           TT     BB    BB   RR   RR   AA  AA       II     NN    NNN          SS
+  JJJJ    EEEEEEE      TT     BBBBBBB    RR   RR   AA  AA    IIIIIIII  NN    NNN    SSSSSS
 EOF
 }
 
-# ============ 清理环境变量 =============
-#清理其它工具产留
+# ============ Clean Environment Variables =============
+# Clean up other tool leftovers
 remove_env_other(){
   OS_NAME=$(uname -s)
   JB_PRODUCTS="idea clion phpstorm goland pycharm webstorm webide rider datagrip rubymine appcode dataspell gateway jetbrains_client jetbrainsclient"
@@ -286,7 +286,7 @@ remove_env_other(){
     sed -i '/___MY_VMOPTIONS_SHELL_FILE="${HOME}\/\.jetbrains\.vmoptions\.sh"; if /d' "${ZSH_PROFILE_PATH}" >/dev/null 2>&1
     rm -rf "${KDE_ENV_DIR}/${MY_VMOPTIONS_SHELL_NAME}"
   fi
-  debug "清理三方工具环境变量完成"
+  debug "Cleaned up third-party tool environment variables"
 }
 remove_env_item_vars() {
     local shell_files=(
@@ -296,40 +296,40 @@ remove_env_item_vars() {
         "${USER_HOME}/.profile"
     )
 
-    # 解析产品
+    # Parse products
     local index=0
     local product_count=$(echo "$PRODUCTS" | jq length)
 
-    # 先过滤出实际存在的文件
+    # First filter out existing files
     local existing_files=()
     for file in "${shell_files[@]}"; do
         [ -f "$file" ] && existing_files+=("$file")
     done
 
-    # 如果没有存在的文件则直接返回
+    # If no existing files found, return directly
     [ ${#existing_files[@]} -eq 0 ] && {
-        debug "未找到任何环境变量文件,跳过"
+        debug "No environment variable files found, skipping"
         return
     }
 
-    # 环境变量备份目录
+    # Environment variable backup directory
     local dir_date_backup="$dir_backups/$(date +%s)"
     for file in "${existing_files[@]}"; do
-      # 判断文件中是否包含指定环境变量
+      # Check if file contains specified environment variables
         if [ ! -w "$file" ]; then
-            warning "文件 $file 不可写，跳过修改" >&2
+            warning "File $file is not writable, skipping modification" >&2
             continue
         fi
 
-        # 备份环境变量文件到dir_backups/时间
+        # Backup environment variable file to dir_backups/timestamp
         if [ ! -d "$dir_date_backup" ]; then
             mkdir -p "$dir_date_backup"
         fi
 
         cp "$file" "${dir_date_backup}/_$(basename ${file})"
-        debug "备份环境变量文件: $file, $dir_date_backup,_$(basename ${file})"
+        debug "Backed up environment variable file: $file, $dir_date_backup,_$(basename ${file})"
 
-        # 检测环境变量配置文件
+        # Detect environment variable configuration file
         local index=0
         while [ $index -lt $product_count ]; do
             IFS='|' read -r name code <<< "$(parse_product_from_json "$index")"
@@ -339,10 +339,10 @@ remove_env_item_vars() {
             fi
 
             local upper_key="$(echo "${name}" | tr '[:lower:]' '[:upper:]')_VM_OPTIONS"
-            # 判断file里面是否包含upper_key
+            # Check if file contains upper_key
             if grep -q "^${upper_key}" "$file"; then
                 sed -i -E "/${upper_key}/d" "$file"
-                debug "删除环境变量: $file,$upper_key"
+                debug "Removed environment variable: $file,$upper_key"
             fi
             ((index++))
         done
@@ -351,28 +351,28 @@ remove_env_item_vars() {
 }
 
 remove_env_vars() {
-    info "开始清理 JetBrains 相关环境变量"
+    info "Starting to clean JetBrains related environment variables"
     remove_env_item_vars
-    # 删除其它激活工具残留
+    # Remove other activation tool leftovers
     remove_env_other
 }
 
-# ============ 用户输入授权信息 =============
+# ============ Read User License Information =============
 validate_date_format() {
     local input="$1"
 
-    # 第一步：检查是否符合 yyyy-MM-dd 格式
+    # First step: check if it matches yyyy-MM-dd format
     if [[ ! "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
-        warning "请输入标准格式：yyyy-MM-dd（例如：2099-12-31）"
+        warning "Please enter standard format: yyyy-MM-dd (e.g., 2099-12-31)"
         return 1
     fi
 
-    # 第二步：直接返回原值（无需调用 date 验证真实性）
+    # Second step: return original value (no need to call date to verify authenticity)
     echo "$input"
     return 0
 }
 read_license_info() {
-    read -p "自定义授权名称 (回车默认 ckey.run): " license_name
+    read -p "Custom license name (press Enter for default ckey.run): " license_name
     license_name=${license_name:-ckey.run}
 
     local default_expiry="2099-12-31"
@@ -380,14 +380,14 @@ read_license_info() {
     local valid=false
 
     while [ "$valid" == "false" ]; do
-        read -p "自定义授权日期 (回车默认 $default_expiry, 格式 yyyy-MM-dd): " expiry_input
+        read -p "Custom license expiry date (press Enter for $default_expiry, format yyyy-MM-dd): " expiry_input
         expiry_input=${expiry_input:-$default_expiry}
-        debug  "输入的授权日期: $expiry_input"
+        debug  "Entered license date: $expiry_input"
         if expiry=$(validate_date_format "$expiry_input"); then
             expiry="$expiry"
             valid=true
         else
-            warning "日期格式不合法，请输入正确的 yyyy-MM-dd 格式(例如：2099-12-31)"
+            warning "Invalid date format, please enter correct yyyy-MM-dd format (e.g., 2099-12-31)"
         fi
     done
 
@@ -402,35 +402,35 @@ EOF
 )
 }
 
-# ============ 创建工作目录 =============
+# ============ Create Working Directory =============
 do_create_work_dir() {
     if [[ "${dir_work}" == "/" || -z "${dir_work}" ]]; then
-        error "检测到非法路径: ${dir_work}，请检查配置。"
+        error "Detected illegal path: ${dir_work}, please check configuration."
         exit 1
     fi
 
     if [ -d "${dir_work}" ]; then
         rm -rf "${dir_plugins}" "${dir_config}" "${file_netfilter_jar}" || {
-            error "文件被占用，请先关闭所有Jetbrains IDE后再试！"
+            error "Files are in use, please close all JetBrains IDEs before trying again!"
             exit 1
         }
     fi
     mkdir -p "${dir_config}" "${dir_plugins}" "${dir_backups}" || {
-         error "创建工作目录失败: ${dir_config} 或 ${dir_plugins} 或 ${dir_backups}"
+         error "Failed to create working directory: ${dir_config} or ${dir_plugins} or ${dir_backups}"
          exit 1
      }
-    debug "创建工作目录: ${dir_work}"
+    debug "Created working directory: ${dir_work}"
 }
 
-# ============ 下载文件 =============
+# ============ Download Files =============
 download_one_file() {
     local url="$1"
     local file_save_path="$2"
-    debug "\r正在下载: ${url} -> ${file_save_path}"
+    debug "\rDownloading: ${url} -> ${file_save_path}"
     curl -s -o "${file_save_path}" "${url}"
 
     if [ $? -ne 0 ]; then
-        error "\r下载失败: ${url}"
+        error "\rDownload failed: ${url}"
         exit 1
     fi
 
@@ -439,7 +439,7 @@ download_one_file() {
         if command -v $SHA_TOOL &>/dev/null; then
             sha1_hash=$($SHA_TOOL "$file_save_path" | awk '{print $1}')
         else
-            warning "未找到 $SHA_TOOL 工具，跳过 SHA-1 校验"
+            warning "$SHA_TOOL tool not found, skipping SHA-1 verification"
             return
         fi
         debug "sha1: $sha1_hash"
@@ -456,7 +456,7 @@ progress_bar() {
     bar+=$(printf '#%.0s' $(seq 1 $filled))
     bar+=$(printf '.%.0s' $(seq 1 $((bar_length - filled))))
     bar+="]"
-    printf "\r配置 ja-netfilter... %d/%d %s %d%%" "$current" "$total" "$bar" "$percent"
+    printf "\rConfiguring ja-netfilter... %d/%d %s %d%%" "$current" "$total" "$bar" "$percent"
 }
 
 do_download_resources() {
@@ -478,8 +478,8 @@ do_download_resources() {
     local total_files=${#resources[@]}
     local count=0
 
-    debug  "源ja-netfilter项目地址: https://gitee.com/ja-netfilter/ja-netfilter/releases/tag/2022.2.0"
-    debug  "如需检查下载的.jar是否被篡改请核对sha1的值是否与源项目文件一致"
+    debug  "Source ja-netfilter project address: https://gitee.com/ja-netfilter/ja-netfilter/releases/tag/2022.2.0"
+    debug  "To check if the downloaded .jar has been tampered with, please verify that the sha1 value matches the source project files"
     for item in "${resources[@]}"; do
         IFS='|' read -r url path <<< "$item"
         download_one_file "$url" "$path"
@@ -489,11 +489,11 @@ do_download_resources() {
     echo -e "\n"
 }
 
-# ============ 清理并更新 .vmoptions 文件 =============
+# ============ Clean and Update .vmoptions Files =============
 clean_vmoptions() {
     local file="$1"
     if [ ! -f "$file" ]; then
-        debug "清理vm: 文件不存在，跳过清理: $file"
+        debug "Clean vm: File does not exist, skipping cleanup: $file"
         return 0
     fi
 
@@ -513,14 +513,14 @@ clean_vmoptions() {
     done < "$file"
 
     printf "%s\n" "${temp_lines[@]}" > "$file"
-    debug "清理vm: $file"
+    debug "Clean vm: $file"
 }
 
 append_vmoptions() {
     local file="$1"
     if [ ! -f "$file" ]; then
         touch "$file" || {
-            error "生成vm: 创建失败: $file"
+            error "Generate vm: Failed to create: $file"
             return
         }
     fi
@@ -531,10 +531,10 @@ append_vmoptions() {
 -javaagent:${file_netfilter_jar}
 EOF
 
-    debug "生成vm: $file"
+    debug "Generate vm: $file"
 }
 
-# ============ 生成激活码 =============
+# ============ Generate Activation Code =============
 generate_license() {
     local obj_product_name="$1"
     local obj_product_code="$2"
@@ -551,13 +551,13 @@ generate_license() {
         -o "$file_license" > /dev/null
 
     if [ $? -eq 0 ]; then
-        success "${dir_product_name} 激活成功！"
+        success "${dir_product_name} activation successful!"
     else
-        warning "${dir_product_name} 需要手动输入激活码！"
+        warning "${dir_product_name} requires manual license key input!"
     fi
 }
 
-# ============ 处理单个 Jetbrains 产品 =============
+# ============ Handle Single JetBrains Product =============
 handle_jetbrains_dir() {
     local dir="$1"
     local dir_product_name=$(basename "$dir")
@@ -576,47 +576,47 @@ handle_jetbrains_dir() {
 
     [ -z "$obj_product_name" ] && return
 
-    info "处理: ${dir_product_name}"
+    info "Processing: ${dir_product_name}"
 
     local file_home="${dir}/.home"
     [ -f "$file_home" ] || {
-        warning "未找到 ${dir_product_name} 的 .home 文件"
+        warning ".home file not found for ${dir_product_name}"
         return
     }
 
-    debug ".home路径: $file_home"
+    debug ".home path: $file_home"
 
     local install_path=$(cat "$file_home")
     [ -d "$install_path" ] || {
-        warning "未找到 ${dir_product_name} 的安装路径！"
+        warning "Installation path not found for ${dir_product_name}!"
         return
     }
 
-    debug ".home内容: $install_path"
+    debug ".home content: $install_path"
 
     local dir_bin="${install_path}/bin"
     [ -d "$dir_bin" ] || {
-        warning "${dir_product_name} 的 bin 目录不存在，请确认是否正确安装！"
+        warning "Bin directory does not exist for ${dir_product_name}, please confirm if it's properly installed!"
         return
     }
 
     local dir_config_product="${dir_config_jb}/${dir_product_name}"
 
-    # 先查找所有 .vmoptions 文件
+    # First find all .vmoptions files
     files=("${dir_config_product}"/*${FILE_VMOPTIONS})
 
-    # 判断是否真的找到了文件
+    # Check if files were actually found
     if [[ -f "${files[0]}" ]]; then
       for file_vmoption in "${files[@]}"; do
         clean_vmoptions "$file_vmoption"
         append_vmoptions "$file_vmoption"
       done
     else
-      debug "未找到${dir_product_name} 的.vmoptions文件，将创建一个默认的"
+      debug "No .vmoptions file found for ${dir_product_name}, will create a default one"
       append_vmoptions "${dir_config_product}/${obj_product_name}${FILE_VMOPTIONS}"
     fi
 
-    # 判断${dir_config_product}/jetbrains_client.vmoptions是否存在，如果不存在则创建一个默认的
+    # Check if ${dir_config_product}/jetbrains_client.vmoptions exists, if not create a default one
    local file_jetbrains_client="${dir_config_product}/jetbrains_client.vmoptions"
     if [ ! -f "${file_jetbrains_client}" ]; then
         append_vmoptions "${file_jetbrains_client}"
@@ -628,28 +628,28 @@ handle_jetbrains_dir() {
     generate_license "$obj_product_name" "$obj_product_code" "$dir_product_name"
 }
 
-# ============ 主流程 =============
+# ============ Main Process =============
 main() {
     clear
     show_ascii_jb
-    info "\r欢迎使用 JetBrains 激活工具 | CodeKey Run"
-    warning "脚本日期：2025-8-1 11:00:35"
-    error "注意，执行脚本默认会将所有产品全部激活一遍，无论之前是否激活过！！！"
-    warning "请确保激活的软件处于关闭状态，请按回车继续..."
+    info "\rWelcome to JetBrains Activation Tool | CodeKey Run"
+    warning "Script date: 2025-8-1 11:00:35"
+    error "Note: By default, the script will activate all products, regardless of whether they have been activated before!!!"
+    warning "Please ensure that the software to be activated is closed, press Enter to continue..."
     read -r
 
     read_license_info
 
-    info "处理中，请耐心等待..."
+    info "Processing, please wait patiently..."
 
     check_and_install_deps
 
     if [ ! -d "${dir_config_jb}" ]; then
-        error "未找到${dir_config_jb}目录"
+        error "${dir_config_jb} directory not found"
         exit 1
     fi
 
-    debug "config目录：${dir_config_jb}"
+    debug "Config directory: ${dir_config_jb}"
 
     do_create_work_dir
 
@@ -661,12 +661,12 @@ main() {
         [ -d "$dir" ] && handle_jetbrains_dir "$dir"
     done
 
-    info "所有项处理结束，如需要激活码，请前往网站获取！"
+    info "All items processing completed, if you need activation codes, please visit the website to get them!"
     sleep 1
     $OPEN_CMD "$URL_BASE" &>/dev/null
 }
 
 main "$@"
-# 删除自己
+# Delete self
 rm -f "${BASH_SOURCE[0]}"
 󰣇 ~ ❯  
