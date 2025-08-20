@@ -319,15 +319,6 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ---
 
-## 📞 Контакты
-
-- 📧 Email: your-email@example.com
-- 💬 Telegram: [@your_username](https://t.me/your_username)
-- 🐛 Issues: [GitHub Issues](https://github.com/neKamita/toolbox-activator/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/neKamita/toolbox-activator/discussions)
-
----
-
 ## 🙏 Благодарности
 
 - [ja-netfilter](https://gitee.com/ja-netfilter/ja-netfilter) - основная технология активации
