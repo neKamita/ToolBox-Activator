@@ -467,7 +467,6 @@ function Add-VMOptions {
 }
 
 # ============ Generate License Key =============
-# ============ Generate License Key - FIXED VERSION =============
 function New-License {
     param(
         [string]$ProductName,
@@ -481,91 +480,31 @@ function New-License {
         Remove-Item $licenseFile -Force
     }
 
-    # FIX 1: Properly construct JSON with UTF-8 encoding
-    $licenseObj = @{
-        assigneeName = ""
-        expiryDate = ($LICENSE_JSON | ConvertFrom-Json).expiryDate
-        licenseName = ($LICENSE_JSON | ConvertFrom-Json).licenseName
-        productCode = $ProductCode
-    }
-    
-    # FIX 2: Convert to JSON with proper depth and encoding
-    $jsonBody = $licenseObj | ConvertTo-Json -Depth 10 -Compress
+    $jsonBody = $LICENSE_JSON | ConvertFrom-Json
+    $jsonBody.productCode = $ProductCode
+    $jsonBody = $jsonBody | ConvertTo-Json
 
-    Write-Debug "URL_LICENSE: $URL_LICENSE"
-    Write-Debug "JSON Body: $jsonBody"
-    Write-Debug "Save Path: $licenseFile"
+    Write-Debug "URL_LICENSE:$URL_LICENSE, params:$jsonBody, save_path:$licenseFile"
 
     try {
-        # FIX 3: Use WebRequest instead of RestMethod for better control
-        $headers = @{
-            'Content-Type' = 'application/json; charset=utf-8'
-            'User-Agent' = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        Invoke-RestMethod -Uri $URL_LICENSE -Method Post -Body $jsonBody -ContentType "application/json" -OutFile $licenseFile
 
-        # FIX 4: Explicit UTF-8 encoding for the request body
-        $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($jsonBody)
-        
-        $response = Invoke-WebRequest -Uri $URL_LICENSE -Method Post -Body $bodyBytes -Headers $headers -UseBasicParsing
-
-        # FIX 5: Save response content with proper encoding
-        [System.IO.File]::WriteAllText($licenseFile, $response.Content, [System.Text.Encoding]::UTF8)
-
-        if (Test-Path $licenseFile -and (Get-Item $licenseFile).Length -gt 0) {
+        if (Test-Path $licenseFile) {
             Write-Success "$ProductDir activation successful!"
 
             # Show license key in terminal
             Write-Info "=== LICENSE KEY FOR $ProductDir ==="
-            $licenseContent = Get-Content $licenseFile -Raw -Encoding UTF8
-            Write-ColoredMessage $licenseContent $Colors.Green
+            Write-ColoredMessage (Get-Content $licenseFile -Raw) $Colors.Green
             Write-Info "Copy the key above and use it to activate $ProductDir"
             Write-Host ""
         } else {
-            Write-Warning "$ProductDir license file is empty or creation failed!"
-            Write-Debug "Response Status: $($response.StatusCode)"
-            Write-Debug "Response Content: $($response.Content)"
-        }
-    } catch {
-        Write-Warning "$ProductDir license generation failed: $($_.Exception.Message)"
-        Write-Debug "Full Error: $($_.Exception | ConvertTo-Json -Depth 3)"
-        
-        # FIX 6: Fallback method using curl if available
-        if (Get-Command curl -ErrorAction SilentlyContinue) {
-            Write-Info "Trying fallback method with curl..."
-            try {
-                $tempFile = [System.IO.Path]::GetTempFileName()
-                Set-Content -Path $tempFile -Value $jsonBody -Encoding UTF8
-                
-                $curlArgs = @(
-                    '-s', '-X', 'POST', $URL_LICENSE,
-                    '-H', 'Content-Type: application/json',
-                    '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                    '-d', "@$tempFile",
-                    '-o', $licenseFile
-                )
-                
-                & curl @curlArgs
-                
-                Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
-                
-                if (Test-Path $licenseFile -and (Get-Item $licenseFile).Length -gt 0) {
-                    Write-Success "$ProductDir activation successful (via curl)!"
-                    Write-Info "=== LICENSE KEY FOR $ProductDir ==="
-                    $licenseContent = Get-Content $licenseFile -Raw -Encoding UTF8
-                    Write-ColoredMessage $licenseContent $Colors.Green
-                    Write-Info "Copy the key above and use it to activate $ProductDir"
-                    Write-Host ""
-                } else {
-                    Write-Warning "$ProductDir requires manual license key entry!"
-                }
-            } catch {
-                Write-Warning "$ProductDir requires manual license key entry!"
-            }
-        } else {
             Write-Warning "$ProductDir requires manual license key entry!"
         }
+    } catch {
+        Write-Warning "$ProductDir requires manual license key entry!"
     }
 }
+
 # ============ Process Individual JetBrains Product =============
 function Install-JetBrainsProduct {
     param([string]$ProductDir)
