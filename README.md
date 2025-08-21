@@ -332,7 +332,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 **⭐ Если вам нравится проект, поставьте звезду!**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=neKamita/toolbox-activator&type=Date)](https://star-history.com/#neKamita/toolbox-activator&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=neKamita/ToolBox-Activator&type=Date)](https://star-history.com/#neKamita/toolbox-activator&Date)
 
 ---
 
