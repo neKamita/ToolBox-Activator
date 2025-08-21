@@ -662,7 +662,7 @@ If you find a bug, please:
 
 **⭐ If you like the project, give it a star!**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=neKamita/toolbox-activator&type=Date)](https://star-history.com/#neKamita/toolbox-activator&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=neKamita/ToolBox-Activator&type=Date)](https://star-history.com/#neKamita/toolbox-activator&Date)
 
 ---
 
