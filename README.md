@@ -2,10 +2,9 @@
 
 # 🚀 ToolBox Activator
 
-
-![GitHub issues](https://img.shields.io/github/issues/neKamita/toolbox-activator?style=for-the-badge&color=red)
-![GitHub forks](https://img.shields.io/github/forks/neKamita/toolbox-activator?style=for-the-badge&color=orange)
-![GitHub stars](https://img.shields.io/github/stars/neKamita/toolbox-activator?style=for-the-badge&color=yellow)
+![GitHub issues](https://img.shields.io/github/issues/neKamita/ToolBox-Activator?style=for-the-badge&color=red)
+![GitHub forks](https://img.shields.io/github/forks/neKamita/ToolBox-Activator?style=for-the-badge&color=orange)
+![GitHub stars](https://img.shields.io/github/stars/neKamita/ToolBox-Activator?style=for-the-badge&color=yellow)
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
 ![Language](https://img.shields.io/badge/Language-Bash%20%7C%20PowerShell-green?style=for-the-badge)
