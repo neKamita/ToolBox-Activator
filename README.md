@@ -315,7 +315,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 Если вы нашли ошибку, пожалуйста:
 
-1. Проверьте [существующие issues](https://github.com/neKamita/toolbox-activator/issues)
+1. Проверьте [существующие issues](https://github.com/neKamita/ToolBox-Activator/issues)
 2. Создайте новый issue с подробным описанием
 3. Укажите вашу ОС, версию скрипта и шаги воспроизведения
 
