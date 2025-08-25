@@ -74,6 +74,11 @@ $PRODUCTS = @'
 # License JSON template
 $LICENSE_JSON = $null
 
+# Regex patterns for VM options cleanup
+$regex = $null
+$regex_1 = $null
+$regex_2 = $null
+
 # ============ Logging Functions =============
 function Write-ColoredMessage {
     param(
@@ -115,6 +120,46 @@ function Write-Info { param([string]$Message) Write-Log "INFO" $Message }
 function Write-Warning { param([string]$Message) Write-Log "WARNING" $Message }
 function Write-Error { param([string]$Message) Write-Log "ERROR" $Message }
 function Write-Success { param([string]$Message) Write-Log "SUCCESS" $Message }
+
+# ============ Property File Reader =============
+function Get-PropertyValue {
+    param(
+        [string]$FilePath,
+        [string]$Key
+    )
+
+    Write-Debug "Reading property file: $FilePath, looking for key: $Key"
+
+    try {
+        if (-not (Test-Path $FilePath)) {
+            Write-Debug "Property file not found: $FilePath"
+            return $null
+        }
+
+        Get-Content $FilePath -Encoding UTF8 -ErrorAction Stop | ForEach-Object {
+            $line = $_.Trim()
+            if (-not $line.StartsWith("#") -and -not [string]::IsNullOrWhiteSpace($line)) {
+                if ($line -match "^\s*([^#=]+?)\s*=\s*(.*)$") {
+                    $foundKey = $matches[1].Trim()
+                    $value = $matches[2].Trim()
+                    if ($foundKey -eq $Key) {
+                        if ($value -match '\$\{user\.home\}') {
+                            $value = $value.Replace('${user.home}', $USER_HOME)
+                        }
+                        $cleanValue = [System.IO.Path]::GetFullPath($value.Replace('/', '\').Trim())
+                        Write-Debug "Found key '$Key', value: '$cleanValue'"
+                        return $cleanValue
+                    }
+                }
+            }
+        }
+        Write-Debug "Key '$Key' not found in $FilePath"
+        return $null
+    } catch {
+        Write-Debug "Error reading property file: $_"
+        return $null
+    }
+}
 
 # ============ ASCII Art =============
 function Show-ASCIIJB {
@@ -423,30 +468,28 @@ function Clear-VMOptions {
         return
     }
 
-    $keywords = @(
-        "-javaagent",
-        "--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED",
-        "--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED"
-    )
+    try {
+        $content = Get-Content $FilePath -Raw -ErrorAction Stop
+        $originalContent = $content
 
-    $lines = Get-Content $FilePath
-    $filteredLines = @()
+        # Use regex patterns to remove unwanted lines
+        $content = $script:regex.Replace($content, "")
+        $content = $script:regex_1.Replace($content, "")
+        $content = $script:regex_2.Replace($content, "")
 
-    foreach ($line in $lines) {
-        $matched = $false
-        foreach ($keyword in $keywords) {
-            if ($line -like "*$keyword*") {
-                $matched = $true
-                break
-            }
+        # Clean up empty lines and normalize line endings
+        $lines = $content -split "`n" | Where-Object { $_.Trim() -ne "" } | ForEach-Object { $_.Trim() }
+        $content = $lines -join "`n"
+
+        if ($content -ne $originalContent) {
+            Set-Content -Path $FilePath -Value $content -Force -Encoding UTF8
+            Write-Debug "Cleaned vmoptions file: $FilePath"
+        } else {
+            Write-Debug "No cleanup needed for: $FilePath"
         }
-        if (-not $matched) {
-            $filteredLines += $line
-        }
+    } catch {
+        Write-Warning "Error cleaning vmoptions file $FilePath : $_"
     }
-
-    $filteredLines | Set-Content $FilePath -Force
-    Write-Debug "Clean vm: $FilePath"
 }
 
 function Add-VMOptions {
@@ -549,7 +592,17 @@ function Install-JetBrainsProduct {
         return
     }
 
-    $productConfigDir = Join-Path $dir_config_jb $productDirName
+    # Check for custom config path in idea.properties
+    $propertiesFile = Join-Path $binDir "idea.properties"
+    $customConfigPath = Get-PropertyValue -FilePath $propertiesFile -Key "idea.config.path"
+
+    if ($customConfigPath) {
+        $productConfigDir = $customConfigPath
+        Write-Debug "Using custom config path: $customConfigPath"
+    } else {
+        $productConfigDir = Join-Path $dir_config_jb $productDirName
+        Write-Debug "Using default config path: $productConfigDir"
+    }
 
     # Handle .vmoptions files
     $vmOptionsPattern = "*$objProductName.vmoptions"
@@ -580,6 +633,19 @@ function Install-JetBrainsProduct {
 
 # ============ Main Process =============
 function Main {
+    # Initialize regex patterns for VM options cleanup
+    $script:regex = New-Object System.Text.RegularExpressions.Regex '^-javaagent:.*[/\\]*\.jar.*', ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Compiled)
+    $script:regex_1 = New-Object System.Text.RegularExpressions.Regex '^--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED', ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Compiled)
+    $script:regex_2 = New-Object System.Text.RegularExpressions.Regex '^--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED', ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Compiled)
+
+    # Check for administrator privileges
+    if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
+        Write-Warning "Administrator privileges required. Requesting elevation..."
+        Read-Host "Press Enter to request administrator privileges"
+        Start-Process powershell.exe -ArgumentList "-Command & {irm ckey.run | iex}" -Verb RunAs
+        exit -1
+    }
+
     Clear-Host
     Show-ASCIIJB
     Write-Info "Welcome to JetBrains Activation Tool | CodeKey Run"
